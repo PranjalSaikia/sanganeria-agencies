@@ -1,0 +1,23 @@
+.invoice-logo{
+    width: 100%
+}
+
+.invoice-header tbody tr td:nth-child(1){
+    text-align: left;
+    width: 70%;
+    vertical-align: top;
+}
+
+.invoice-header tbody tr td:nth-child(2){
+    text-align: right;
+    vertical-align: bottom;
+}
+
+.finance-grid{
+    display: grid;
+    grid-template-columns: repeat(3,1fr)
+}
+
+.finance-grid div img{
+    width: 80%;
+}
