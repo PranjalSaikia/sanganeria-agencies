@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+
 export default class EntryForm extends Component {
     constructor(props){
         super(props);
@@ -33,7 +34,10 @@ export default class EntryForm extends Component {
             gtot: '',
             bill: '',
             bill_date: '',
-            mrp: ''
+            mrp: '0.00',
+            supplier_id: '',
+            imei_temp: '',
+            imei: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -71,14 +75,28 @@ export default class EntryForm extends Component {
             bill: '',
             bill_date: '',
             mrp: '0.00',
-            supplier_id: ''
+            supplier_id: '',
+            imei_temp: '',
+            imei: ''
         })
+    }
+
+    handleIMEI = (e) => {
+            let imei = this.state.imei;
+                imei = imei + e.target.value + ','
+                this.setState({
+                    imei,
+                    imei_temp: ''
+                })
+
     }
 
     handleChange(e) {
         this.setState({
             [e.target.name]: e.target.value
         })
+
+        
 
         if (e.target.name === 'brand_id') {
             let products = this.props.products;
@@ -198,7 +216,8 @@ export default class EntryForm extends Component {
             bill_date: this.state.bill_date,
             mrp: this.state.mrp,
             po_no: '',
-            supplier_id: this.state.supplier_id
+            supplier_id: this.state.supplier_id,
+            imei: this.state.imei
         }
 
         //send the data
@@ -321,6 +340,16 @@ export default class EntryForm extends Component {
                                     placeholder="Total Cost"
                                     required={true} />
                             </td>
+                            {/* <td>
+                                <label>MRP (per unit) &nbsp;</label>
+                                <input className="form-control input-sm"
+                                    type="text"
+                                    name="mrp"
+                                    onChange={this.handleChange}
+                                    value={this.state.mrp}
+                                    placeholder="MRP (Per unit)"
+                                    required={true} />
+                            </td> */}
                             <td>
                                 <label>Freight Charges &nbsp;</label>
                                 <input className="form-control input-sm"
@@ -387,11 +416,33 @@ export default class EntryForm extends Component {
 
 
                         </tr>
-                        <tr style={{ height: '50px' }}>
-                            <td colSpan="6" align="right">
-                                <button className="btn btn-sm btn-primary" type="submit">Submit</button>
+                        
+                        <tr style={{ height: '70px' }}>
+                            <td>
+                                <label>Scan IMEI Here</label>
+                                <input className="form-control input-sm"
+                                    type="text"
+                                    name="imei_temp"
+                                    onChange={this.handleChange}
+                                    onBlur={this.handleIMEI}
+                                    value={this.state.imei_temp}
+                                    placeholder="Scan IMEI Here"
+                                />
+                            </td>
+                            <td colSpan="4">
+                                <label>IMEI Stock</label>
+                                <input className="form-control input-sm"
+                                    type="text"
+                                    name="imei"
+                                    onChange={this.handleChange}
+                                    value={this.state.imei}
+                                />
+                            </td>
+                            <td align="right" >
+                                <button style={{ marginTop: '23px' }} className="btn btn-sm btn-primary" type="submit">Submit</button>
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
 

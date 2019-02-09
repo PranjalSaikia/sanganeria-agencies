@@ -153,6 +153,7 @@ export default class StockEntry extends Component {
         
         PostData('/api/update_stock_entry.php', data)
             .then((resp) => {
+                //console.log(resp);
                 if (resp.status === '200') {
                     notify.show(resp.data, 'success', 3000);
                     this._initialFetchStock();

@@ -11,6 +11,7 @@ class StockSheetTable extends Component {
                     <td>{el.brand_name}</td>
                     <td>{el.product_name}</td>
                     <td>{el.bar}</td>
+                    <td>{el.model}</td>
                     <td style={{textAlign: 'right'}}>{el.qty}</td>
                     <td style={{textAlign: 'right'}}>{el.cost}</td>
                     <td style={{textAlign: 'right'}}>{el.tot}</td>
@@ -28,16 +29,17 @@ class StockSheetTable extends Component {
                 
                     <thead>
                         <tr>
-                            <td colSpan="12" align="center"><h4>Stock Sheet</h4></td>
+                            <td colSpan="13" align="center"><h4>Stock Sheet</h4></td>
                         </tr>
                         <tr>
-                            <td colSpan="12" align="center"><h4>Date from: {this.props.date_from} | Date to: {this.props.date_to}</h4></td>
+                            <td colSpan="13" align="center"><h4>Date from: {this.props.date_from} | Date to: {this.props.date_to}</h4></td>
                         </tr>
                         <tr className="alert-success">
                             <th>#</th>
                             <th>Brand Name</th>
                             <th>Product Name</th>
                             <th>Barcode</th>
+                            <th>Model No</th>
                             <th style={{textAlign: 'right'}}>Qty</th>
                             <th style={{textAlign: 'right'}}>Cost</th>
                             <th style={{textAlign: 'right'}}>Total</th>

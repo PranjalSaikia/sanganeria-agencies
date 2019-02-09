@@ -5,6 +5,7 @@ import Navbar from '../Components/Navbar';
 import ReactToPrint from 'react-to-print';
 import PrintInvoice from '../Components/Invoice/Print/PrintInvoice';
 import PrintReturn from '../Components/Invoice/Print/PrintReturn';
+import PrintChallan from '../Components/Challan/Print1/PrintChallan';
 
 class PrintContainer extends Component {
     render() {
@@ -14,7 +15,7 @@ class PrintContainer extends Component {
                 <div className="main-body">
 
                     <div className="container">
-                        <h1>Print Invoice</h1>
+                        <h1>Print</h1>
                         <hr />
                         <div className="col-md-12" align="center">
                             <ReactToPrint
@@ -29,6 +30,7 @@ class PrintContainer extends Component {
 
                         <Switch>
                             <Route exact path="/printinvoice/:type/:id" render={(props) => <PrintInvoice {...props} ref={el => (this.componentRef = el)} />} />
+                            <Route exact path="/printchallan/:type/:id" render={(props) => <PrintChallan {...props} ref={el => (this.componentRef = el)} />} />
                             <Route exact path="/printinvoicer/:type/:id" render={(props) => <PrintReturn {...props} ref={el => (this.componentRef = el)} />} />
                         </Switch>
 

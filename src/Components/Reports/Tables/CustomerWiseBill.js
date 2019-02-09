@@ -17,26 +17,44 @@ class CustomerWiseBill extends Component {
                 } else if (payment.mop === '4') {
                     str = "Not paid";
                 }
+                let j = "";
+                if (this.props.type === 1) {
+                    j = "B2C/";
+                } else if (this.props.type === 2) {
+                    j = "B2B/";
+                }
+
+                let k = "";
+                let parti = el.particulars;
+                if (parti !== false && Array.isArray(parti) && parti.length > 0) {
+                    k = parti.map((el, index) => {
+                        
+                        return <li key={index}>{el.product_name} - {el.model} - {el.barcode}</li>
+                    })
+                }
                 return (
                     <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{el.inv_no}</td>
+                        <td>{j}{el.inv_no}</td>
                         <td>{el.date_of_invoice}</td>
                         <td>{el.customer_name}</td>
-                        <td>{el.customer_gstin}</td>
-                        <td>{el.customer_state}</td>
-                        <td>{el.customer_contact}</td>
+                        <td>
+                            <ol>
+                                {k}
+                            </ol>
+                        </td>
                         <td align="right">{parseFloat(el.bill_tot).toFixed(2)}</td>
                         <td align="right">{parseFloat(el.tax).toFixed(2)}</td>
                         <td align="right">{parseFloat(el.roff).toFixed(2)}</td>
                         <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
                         <td>{str}</td>
+                        <td>{el.narration}</td>
                     </tr>
                 )
             }
             )
         } else {
-            i = <tr key="0"><td colSpan="11" align="center">No data available</td></tr>
+            i = <tr key="0"><td colSpan="13" align="center">No data available</td></tr>
         }
         return (
             <div className="print-container">
@@ -48,14 +66,13 @@ class CustomerWiseBill extends Component {
                             <th>Invoice No</th>
                             <th>Date</th>
                             <th>Customer Name</th>
-                            <th>Customer Gstin</th>
-                            <th>Customer State</th>
-                            <th>Customer contact</th>
+                            <th>Particulars</th>
                             <th style={{textAlign: 'right'}}>Bill Total</th>
                             <th style={{ textAlign: 'right' }}>Tax</th>
                             <th style={{textAlign: 'right'}}>Round Off</th>
                             <th style={{textAlign: 'right'}}>Grand total</th>
                             <th>Payment</th>
+                            <th>Remarks</th>
                         </tr>
                     </thead>
                     <tbody>

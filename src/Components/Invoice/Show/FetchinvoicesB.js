@@ -18,7 +18,7 @@ export default class FetchinvoicesB extends Component {
     }
 
     componentDidMount() {
-        GetData('/api/fetch_invoice.php?type=2')
+        GetData('/api/fetch_invoice.php?type=1')
             .then((resp) => {
 
                 if (resp.status === '200') {
@@ -32,14 +32,14 @@ export default class FetchinvoicesB extends Component {
             })
     }
 
-    onDeletePress(value, index) {
+    onDeletePress(value, type, index) {
         confirmAlert({
             title: 'Confirm to delete',
             message: 'Are you sure to do this.',
             buttons: [
                 {
                     label: 'Yes',
-                    onClick: this.deleteData.bind(this, value, index)
+                    onClick: this.deleteData.bind(this, value, type, index)
                 },
                 {
                     label: 'No',
@@ -48,12 +48,12 @@ export default class FetchinvoicesB extends Component {
         })
     }
 
-    deleteData(value, index) {
+    deleteData(value, type, index) {
         //send the value now
 
         const data = {
             inv_no: value,
-            type: this.state.type
+            type: type
         }
 
         PostData('/api/delete_invoice.php', data)

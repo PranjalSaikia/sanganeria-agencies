@@ -36,7 +36,10 @@ export default class EntryEdit extends Component {
             mrp: '',
             type: 'edit',
             id: '',
-            po_no: ''
+            po_no: '',
+            supplier_id: '',
+            imei_temp: '',
+            imei: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -62,7 +65,10 @@ export default class EntryEdit extends Component {
             bill_date: '',
             mrp: '',
             po_no: '',
-            id: ''
+            id: '',
+            supplier_id: '',
+            imei_temp: '',
+            imei: ''
         })
     }
 
@@ -86,7 +92,8 @@ export default class EntryEdit extends Component {
             bill_date: editData[0].date1,
             mrp: editData[0].mrp,
             supplier_id: editData[0].supplier_id,
-            id: editData[0].id
+            id: editData[0].id,
+            imei: editData[0].imei
         })
     }
 
@@ -98,6 +105,16 @@ export default class EntryEdit extends Component {
         if (this.props !== prevProps) {
             this._initialSet();
         }
+    }
+
+    handleIMEI = (e) => {
+        let imei = this.state.imei;
+        imei = imei + e.target.value + ','
+        this.setState({
+            imei,
+            imei_temp: ''
+        })
+
     }
 
     handleChange(e) {
@@ -224,8 +241,12 @@ export default class EntryEdit extends Component {
             mrp: this.state.mrp,
             po_no: '',
             id: this.state.id,
-            type: 'edit'
+            supplier_id: this.state.supplier_id,
+            type: 'edit',
+            imei: this.state.imei
         }
+
+        console.log(data)
 
         //send the data
 
@@ -410,9 +431,29 @@ export default class EntryEdit extends Component {
                                     />
                                 </td>
                             </tr>
-                            <tr style={{ height: '50px' }}>
-                                <td colSpan="6" align="right">
-                                    <button className="btn btn-sm btn-primary" type="submit">Update</button>
+                            <tr style={{ height: '70px' }}>
+                                <td>
+                                    <label>Scan IMEI Here</label>
+                                    <input className="form-control input-sm"
+                                        type="text"
+                                        name="imei_temp"
+                                        onChange={this.handleChange}
+                                        onBlur={this.handleIMEI}
+                                        value={this.state.imei_temp}
+                                        placeholder="Scan IMEI Here"
+                                    />
+                                </td>
+                                <td colSpan="4">
+                                    <label>IMEI Stock</label>
+                                    <input className="form-control input-sm"
+                                        type="text"
+                                        name="imei"
+                                        onChange={this.handleChange}
+                                        value={this.state.imei}
+                                    />
+                                </td>
+                                <td align="right" >
+                                    <button style={{ marginTop: '23px' }} className="btn btn-sm btn-primary" type="submit">Submit</button>
                                 </td>
                             </tr>
                         </tbody>

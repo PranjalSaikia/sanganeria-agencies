@@ -5,7 +5,7 @@ class TempInputReturn extends Component {
         super(props);
         this.state = {
             f_products: [],
-            type: '1',
+            type: '0',
             barcode: '',
             brand_id: '',
             product_id: '',
@@ -325,7 +325,7 @@ class TempInputReturn extends Component {
         this.setState({
             f_products: [],
             barcode: '',
-            type: '1',
+            type: '0',
             brand_id: '',
             product_id: '',
             qty: '',
@@ -379,8 +379,8 @@ class TempInputReturn extends Component {
                                         value={this.state.type}
                                         required={true}
                                         readOnly={true}>
-                                        <option value="1">B2C</option>
-                                        <option value="2">B2B</option>
+                                        <option value="0">B2C</option>
+                                        <option value="1">B2B</option>
                                     </select>
                                 </td>
                             </tr>

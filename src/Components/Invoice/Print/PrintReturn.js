@@ -22,9 +22,9 @@ export default class PrintReturn extends Component {
         }
         PostData('/api/fetch_invoice_return_single.php', data)
             .then((resp) => {
-                console.log(resp);
+                //console.log(resp);
                 if (resp.status === '200') {
-                    //console.log(resp.data[1]);
+                    
                     this.setState({
                         invoice_main: resp.data[0][0],
                         invoice_det: resp.data[1],

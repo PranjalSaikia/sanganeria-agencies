@@ -39,6 +39,7 @@ class BillReportDate extends Component {
         PostData('/api/fetch_invoice_report.php', data)
             .then((resp) => {
                 if (resp.status === '200') {
+                    //console.log(resp.data)
                     this.setState({
                         results: resp.data
                     })
@@ -112,7 +113,7 @@ class BillReportDate extends Component {
                         buttonText="Export to Excel" />
                 </div>
                 <hr />
-                <DateWiseBill ref={el => (this.componentRef = el)} results={this.state.results} />
+                <DateWiseBill ref={el => (this.componentRef = el)} results={this.state.results} type={this.state.type} />
             </div>
         )
     }

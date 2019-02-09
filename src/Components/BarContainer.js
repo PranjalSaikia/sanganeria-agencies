@@ -111,13 +111,13 @@ export default class BarContainer extends Component {
         let j = [];
         if (f_products.length > 0) {
             j = f_products.map((el, index) =>
-                <option key={index} value={el.barcode}>{el.product_name}</option>
+                <option key={index} value={el.barcode}>{el.product_name} - {el.model}</option>
             )
         }
         return (
             <div className="container">
 
-                <h1>Barcode Genaration</h1>
+                <h1>Barcode Generation</h1>
 
                 <hr />
 

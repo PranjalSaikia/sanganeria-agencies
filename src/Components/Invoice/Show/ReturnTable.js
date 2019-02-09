@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 export default class ReturnTable extends Component {
-    onDelete(value, index) {
-        this.props.delete(value, index);
+    onDelete(value, type, index) {
+        this.props.delete(value, type, index);
     }
     render() {
         let i = [];
@@ -17,9 +17,9 @@ export default class ReturnTable extends Component {
                     <td align="right">{parseFloat(el.bill_tot).toFixed(2)}</td>
                     <td align="right">{parseFloat(el.tax).toFixed(2)}</td>
                     <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
-                    <td><Link to={`/printinvoicer/${this.props.type}/${el.inv_no}`}><i className="fa fa-print"></i></Link></td>
-                    <td><Link to={`/invoice/editr/${this.props.type}/${el.inv_no}`}><i className="fa fa-pencil"></i></Link></td>
-                    <td><i className="fa fa-trash" onClick={this.onDelete.bind(this, el.inv_no, index)}></i></td>
+                    <td><Link to={`/printinvoicer/${el.type}/${el.inv_no}`}><i className="fa fa-print"></i></Link></td>
+                    <td><Link to={`/invoice/editr/${el.type}/${el.inv_no}`}><i className="fa fa-pencil"></i></Link></td>
+                    <td><i className="fa fa-trash" onClick={this.onDelete.bind(this, el.inv_no,el.type, index)}></i></td>
                 </tr>)
         }
         return (

@@ -5,7 +5,7 @@ class TempInput extends Component {
         super(props);
         this.state = {
             f_products: [],
-            type: '1',
+            type: '0',
             barcode: '',
             brand_id: '',
             product_id: '',
@@ -24,18 +24,48 @@ class TempInput extends Component {
                 qty: ''
             },
             gst: '1',
-            btnDis: true
+            btnDis: true,
+            imei: ''
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
-        localStorage.setItem('type', 1);
-        this.setState({
-            gst: '1'
-        })
+
+
+        if (this.props.edit === true) {
+
+            this.setState({
+                ...this.props.edit_data
+            })
+
+        } else {
+            localStorage.setItem('type', 0);
+            this.setState({
+                gst: '1'
+            })
+        }
     }
+
+    componentDidUpdate = (prevProps) => {
+        if (prevProps.edit !== this.props.edit) {
+            if (this.props.edit) {
+
+                let barcode = this.props.edit_data.barcode;
+                let products = this.props.products;
+                let results = products.filter((el) => el.barcode === barcode);
+                let results_1 = products.filter((el) => el.brand_id === results[0].brand_id);
+                this.setState({
+                    ...this.props.edit_data,
+                    brand_id: results[0].brand_id,
+                    f_products: results_1,
+                    product_id: results[0].product_id,
+                })
+            }
+        }
+    }
+
 
     handleChange(e) {
         this.setState({
@@ -56,7 +86,7 @@ class TempInput extends Component {
                 this.setState({
                     brand_id: results[0].brand_id,
                     product_id: results[0].product_id,
-                    mrp: results[0].mrp,
+
                     f_products: results_1
                 })
 
@@ -93,7 +123,7 @@ class TempInput extends Component {
                     brand_id: results[0].brand_id,
                     product_id: results[0].product_id,
                     barcode: results[0].barcode,
-                    mrp: results[0].mrp,
+
                 })
 
                 if (this.state.gst === '1') {
@@ -302,20 +332,20 @@ class TempInput extends Component {
 
         }
 
-        if(e.target.name === 'gst'){
+        if (e.target.name === 'gst') {
             let products = this.props.products;
             let results = products.filter((el) => el.barcode === this.state.barcode);
             let cgst = results[0].cgst;
             let sgst = results[0].sgst;
             let igst = results[0].igst;
 
-            if(e.target.value === '1'){
+            if (e.target.value === '1') {
                 this.setState({
                     cgst: cgst,
                     sgst: sgst,
                     igst: '0.00'
                 })
-            }else{
+            } else {
                 this.setState({
                     cgst: '0.00',
                     sgst: '0.00',
@@ -340,11 +370,11 @@ class TempInput extends Component {
                 tax: tax.toFixed(2),
                 gtot: gtot.toFixed(2),
             })
-            
+
         }
 
 
-        if(e.target.name === 'cgst'){
+        if (e.target.name === 'cgst') {
             let cgst = e.target.value;
             let sgst = this.state.sgst;
             let igst = this.state.igst;
@@ -396,7 +426,56 @@ class TempInput extends Component {
                 gtot: gtot.toFixed(2),
             })
         }
-        
+
+        if (e.target.name === 'gtot') {
+            let gtot = e.target.value;
+
+            let sgst = this.state.sgst;
+            let cgst = this.state.cgst;
+            let igst = this.state.igst;
+
+            //let total = parseFloat(gtot) - (parseFloat(gtot) * (parseFloat(sgst) + parseFloat(cgst) + parseFloat(igst)) / 100);
+
+            let total = parseFloat(gtot) / ((100 + parseFloat(sgst) + parseFloat(cgst) + parseFloat(igst)) / 100);
+
+            let cgst_a = parseFloat(cgst) * parseFloat(total) / 100;
+            let sgst_a = parseFloat(sgst) * parseFloat(total) / 100;
+            let igst_a = parseFloat(igst) * parseFloat(total) / 100;
+            let tax = cgst_a + sgst_a + igst_a;
+            //            console.log(cgst_a)
+
+            this.setState({
+                tax: tax.toFixed(2),
+                amount: total.toFixed(2)
+            })
+
+        }
+
+
+        if (e.target.name === 'amount') {
+            let total = e.target.value;
+
+            let sgst = this.state.sgst;
+            let cgst = this.state.cgst;
+            let igst = this.state.igst;
+
+            //let total = parseFloat(gtot) - (parseFloat(gtot) * (parseFloat(sgst) + parseFloat(cgst) + parseFloat(igst)) / 100);
+
+            let cgst_a = parseFloat(cgst) * parseFloat(total) / 100;
+            let sgst_a = parseFloat(sgst) * parseFloat(total) / 100;
+            let igst_a = parseFloat(igst) * parseFloat(total) / 100;
+            let tax = cgst_a + sgst_a + igst_a;
+            //console.log(cgst_a)
+
+            let gtot = parseFloat(total) + parseFloat(tax);
+
+            this.setState({
+                tax: tax.toFixed(2),
+                gtot: gtot.toFixed(2)
+            })
+
+        }
+
 
 
     }
@@ -445,9 +524,15 @@ class TempInput extends Component {
             igst: this.state.igst,
             tax: this.state.tax,
             gtot: this.state.gtot,
+            imei: this.state.imei,
         }
 
-        this.props.sendData(data);
+        if(this.props.edit){
+            this.props.editData(data, this.props.index);
+        }else{
+            this.props.sendData(data);
+        }
+        
 
         this.setState({
             f_products: [],
@@ -468,10 +553,39 @@ class TempInput extends Component {
             errors: {
                 qty: ''
             },
-            btnDis: true
+            btnDis: true,
+            imei: ''
+
         })
 
 
+    }
+
+    onCancel(){
+        this.setState({
+            f_products: [],
+            barcode: '',
+            brand_id: '',
+            product_id: '',
+            qty: '',
+            mrp: '',
+            disc_p: '',
+            disc_a: '',
+            amount: '',
+            cgst: '',
+            sgst: '',
+            igst: '',
+            tax: '0.00',
+            gtot: '0.00',
+            view: [],
+            errors: {
+                qty: ''
+            },
+            btnDis: true,
+            imei: ''
+        })
+
+        this.props.onCancel();
     }
 
     render() {
@@ -504,8 +618,8 @@ class TempInput extends Component {
                                         onChange={this.handleChange}
                                         value={this.state.type}
                                         required={true}>
-                                        <option value="1">B2C</option>
-                                        <option value="2">B2B</option>
+                                        <option value="0">B2C</option>
+                                        <option value="1">B2B</option>
                                     </select>
                                 </td>
                             </tr>
@@ -550,6 +664,19 @@ class TempInput extends Component {
                                     </select>
                                 </td>
                             </tr>
+
+                            <tr style={{ height: '40px' }}>
+                                <td><b>IMEI</b></td>
+                                <td colSpan="3">
+                                    <input
+                                        className="form-control input-sm"
+                                        placeholder="Scan IMEI (for mobile)"
+                                        name="imei"
+                                        onChange={this.handleChange}
+                                        value={this.state.imei}
+                                        />
+                                </td>
+                            </tr>
                             <tr style={{ height: '40px' }}>
                                 <td><b>Qty</b></td>
                                 <td colSpan="3">
@@ -563,7 +690,7 @@ class TempInput extends Component {
                                         required={true} />
                                 </td>
                             </tr>
-                            <tr style={{ height: '40px' }}>
+                            {/* <tr style={{ height: '40px' }}>
                                 <td><b>MRP</b></td>
                                 <td colSpan="3">
                                     <input
@@ -595,7 +722,7 @@ class TempInput extends Component {
                                         value={this.state.disc_a}
                                         required={true} />
                                 </td>
-                            </tr>
+                            </tr> */}
                             <tr style={{ height: '40px' }}>
                                 <td><b>Total</b></td>
                                 <td colSpan="3">
@@ -629,7 +756,8 @@ class TempInput extends Component {
                                         name="cgst"
                                         onChange={this.handleChange}
                                         value={this.state.cgst}
-                                        required={true} />
+                                        required={true}
+                                        readOnly={true} />
                                 </td>
                                 <td>
                                     <input
@@ -638,7 +766,8 @@ class TempInput extends Component {
                                         name="sgst"
                                         onChange={this.handleChange}
                                         value={this.state.sgst}
-                                        required={true} />
+                                        required={true}
+                                        readOnly={true} />
                                 </td>
                                 <td>
                                     <input
@@ -647,7 +776,8 @@ class TempInput extends Component {
                                         name="igst"
                                         onChange={this.handleChange}
                                         value={this.state.igst}
-                                        required={true} />
+                                        required={true}
+                                        readOnly={true} />
                                 </td>
                             </tr>
                             <tr style={{ height: '40px' }}>
@@ -659,7 +789,8 @@ class TempInput extends Component {
                                         name="tax"
                                         onChange={this.handleChange}
                                         value={this.state.tax}
-                                        required={true} />
+                                        required={true}
+                                        readOnly={true} />
                                 </td>
                                 <td colSpan="2">
                                     <input
@@ -672,7 +803,24 @@ class TempInput extends Component {
                                 </td>
                             </tr>
                             <tr style={{ height: '40px' }}>
-                                <td colSpan="4" align="right"><button type="submit" disabled={this.state.btnDis} className="btn btn-sm btn-primary">Add</button></td>
+                                <td colSpan="4" align="right">
+                                    {this.props.edit ? <div>
+                                        <button
+                                        type="submit"
+                                        className="btn btn-sm btn-danger">Edit</button>
+
+                                        <button
+                                            type="button"
+                                            onClick={this.onCancel.bind(this)}
+                                            className="btn btn-sm">Cancel</button>
+                                        
+                                        </div> : 
+                                        <button
+                                            type="submit"
+                                            disabled={this.state.btnDis}
+                                            className="btn btn-sm btn-primary">Add</button>}
+                                    
+                                </td>
                             </tr>
                         </tbody>
                     </table>

@@ -153,7 +153,9 @@ export default class InvoiceDetReturn extends Component {
             c_charge: this.state.c_charge,
             billed_amount: invoice_det.main_data.billed_amount,
             tax: invoice_det.main_data.grand_tax,
-            table_data: invoice_det.table_data
+            table_data: invoice_det.table_data,
+            id: this.props.id,
+            original_type: this.props.original_type,
         }
 
 

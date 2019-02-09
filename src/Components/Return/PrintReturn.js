@@ -45,7 +45,7 @@ export default class PrintReturn extends Component {
                     <td>{el.brand_name}</td>
                     <td>{el.product_name}</td>
                     <td>{el.hsn}</td>
-                    <td align="right">{el.qty}</td>
+                    <td align="right">{el.qty} <br/>({el.imei})</td>
                     <td align="right">{parseFloat(el.mrp).toFixed(2)}</td>
                     <td align="right">{parseFloat(el.cost).toFixed(2)}</td>
                     <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>

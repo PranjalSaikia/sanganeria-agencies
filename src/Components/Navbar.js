@@ -56,7 +56,7 @@ class Navbar extends Component {
             <ul className="sidenav-list">
                 
                 <li>
-                    <NavLink to="/master/brand" activeStyle={style.Side}>
+                    <NavLink exact to="/master/brand" activeStyle={style.Side}>
                         <figure><i className="fa fa-plus"></i></figure>
                         Masters
                 </NavLink>
@@ -75,6 +75,13 @@ class Navbar extends Component {
                         Stock
                 </NavLink>
                 </li>
+
+                        <li>
+                            <NavLink to="/challan/sales" activeStyle={style.Side}>
+                                <figure><i className="fa fa-cube"></i></figure>
+                                Challan
+                    </NavLink>
+                        </li>
                 
                 
                 <li>

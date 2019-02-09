@@ -35,7 +35,9 @@ export default class InvoiceDet extends Component {
             cheque_date: '',
             notpaid: false,
             roff: '',
-            c_charge: ''
+            c_charge: '',
+            narration: '',
+            errors: []
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -58,6 +60,25 @@ export default class InvoiceDet extends Component {
         if (this.props !== prevProps) {
             this._getGtot();
         }
+    }
+
+    handleValidation = () => {
+        let { customer_id } = this.state;
+        let errors = this.state.errors;
+        let isValid = true;
+
+        if (customer_id === '') {
+            isValid = false;
+            errors['customer_id'] = 'Please select customer';
+        }
+
+        this.setState({
+            errors
+        })
+
+        return isValid;
+
+
     }
 
 
@@ -92,36 +113,39 @@ export default class InvoiceDet extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        let invoice_det = JSON.parse(localStorage.getItem('invoice_det'));
-        let type = localStorage.getItem('type');
-        const data = {
-            date_of_invoice: this.state.date_of_invoice,
-            customer_id: this.state.customer_id,
-            payment: {
-                mop: this.state.mop,
-                amount_receivable: this.state.gtot,
-                cheque_no: this.state.cheque_no,
-                cheque_date: this.state.cheque_date,
-                amount_paid: this.state.amount_paid,
-                balance: this.state.balance,
-            },
-            gtot: this.state.gtot,
-            type: type,
-            place_of_supply: this.state.place_of_supply,
-            challan_no: this.state.challan_no,
-            date_of_challan: this.state.date_of_challan,
-            po_no: this.state.po_no,
-            date_of_po: this.state.date_of_po,
-            transporter: this.state.transporter,
-            roff: invoice_det.main_data.roff,
-            c_charge: this.state.c_charge,
-            billed_amount: invoice_det.main_data.billed_amount,
-            tax: invoice_det.main_data.grand_tax,
-            table_data: invoice_det.table_data
+
+        if(this.handleValidation()){
+            let invoice_det = JSON.parse(localStorage.getItem('invoice_det'));
+            let type = localStorage.getItem('type');
+            const data = {
+                date_of_invoice: this.state.date_of_invoice,
+                customer_id: this.state.customer_id,
+                payment: {
+                    mop: this.state.mop,
+                    amount_receivable: this.state.gtot,
+                    cheque_no: this.state.cheque_no,
+                    cheque_date: this.state.cheque_date,
+                    amount_paid: this.state.amount_paid,
+                    balance: this.state.balance,
+                },
+                gtot: this.state.gtot,
+                type: type,
+                place_of_supply: this.state.place_of_supply,
+                challan_no: this.state.challan_no,
+                date_of_challan: this.state.date_of_challan,
+                po_no: this.state.po_no,
+                narration: this.state.narration,
+                date_of_po: this.state.date_of_po,
+                transporter: this.state.transporter,
+                roff: invoice_det.main_data.roff,
+                c_charge: this.state.c_charge,
+                billed_amount: invoice_det.main_data.billed_amount,
+                tax: invoice_det.main_data.grand_tax,
+                table_data: invoice_det.table_data
+            }
+            this.props.finalSubmit(data);
         }
-
-
-        this.props.finalSubmit(data);
+        
 
     }
 
@@ -171,7 +195,7 @@ export default class InvoiceDet extends Component {
                                     />
                                 </td>
                                 <td>
-                                    <label>Select Customer</label>
+                                    <label>Select Customer <span style={{color: 'red'}}>{this.state.errors['customer_id']}</span></label>
                                     <select
                                         className="form-control input-sm"
                                         name="customer_id"
@@ -268,6 +292,18 @@ export default class InvoiceDet extends Component {
                                         name="transporter"
                                         value={this.state.transporter}
                                         onChange={this.handleChange} />
+                                </td>
+                            </tr>
+                            <tr style={{ height: '60px' }}>
+                                <td colSpan="6">
+                                    <label>Remarks / Description</label>
+                                    <textarea
+                                        className="form-control input-sm"
+                                        name="narration"
+                                        value={this.state.narration}
+                                        onChange={this.handleChange}
+                                        placeholder="Remarks"
+                                    ></textarea>
                                 </td>
                             </tr>
                             <tr style={{ height: '60px' }}>

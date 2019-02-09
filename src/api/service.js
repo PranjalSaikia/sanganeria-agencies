@@ -14,14 +14,38 @@ export function PostData(type, userData) {
                 'Unit': '1'
             }
         })
-            .then((response) => 
-               response.json()
+            .then((resp) => {
+                if (!resp.ok) {
+                    if (resp.status >= 400 && resp.status < 500) {
+                        /* return resp.json().then(data => {
+                            let err = { errorMessage: data };
+                            alert(err.errorMessage);
+                            //logout
+                            //Auth.logout();
+                            throw err;
+                        }) */
+                        throw resp.text();
+                    }
+                    else {
+                        let err = { errorMessage: "Please try again later" };
+                        alert(`Something went Wrong!! Status: ${resp.status}`);
+                        //logout
+                        //Auth.logout();
+                        throw resp.text();
+                    }
+                }else 
+                return resp.json();
+            }
             )
             .then((res) => {
                 resolve(res);
             })
             .catch((error) => {
-                reject(error);
+                /* error.then((e) => {
+                    console.log(e);
+                    reject(error);
+                }); */
+                console.log(error)
             });
     });
 }
@@ -39,7 +63,13 @@ export function GetData(type) {
                 'Unit': '1'
             }
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    throw response.text()
+                }
+            })
             .then((res) => {
                 resolve(res);
             })

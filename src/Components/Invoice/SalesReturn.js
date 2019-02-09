@@ -40,8 +40,13 @@ class SalesReturn extends Component {
                 transporter: '',
                 cheque_no: '',
                 cheque_date: '',
+                narration: ''
             },
-            table_data: []
+            table_data: [],
+            edit: false,
+            edit_data: [],
+            table_data: [],
+            inn: ''
         }
     }
 
@@ -74,12 +79,12 @@ class SalesReturn extends Component {
                 }
             });
 
-            let initialTable = {
-                main_data: '',
-                table_data: []
-            }
-            localStorage.setItem('gtot','0.00');
-            localStorage.setItem('invoice_det', JSON.stringify(initialTable));
+        let initialTable = {
+            main_data: '',
+            table_data: []
+        }
+        localStorage.setItem('gtot', '0.00');
+        localStorage.setItem('invoice_det', JSON.stringify(initialTable));
     }
 
     componentDidMount() {
@@ -87,8 +92,8 @@ class SalesReturn extends Component {
 
     }
 
-    componentDidUpdate(prevProps){
-        if(this.props !== prevProps){
+    componentDidUpdate(prevProps) {
+        if (this.props !== prevProps) {
             this._initialFetch();
         }
     }
@@ -118,11 +123,11 @@ class SalesReturn extends Component {
     }
 
     onSetData(data) {
-        if(data.table_data.length > 0){
+        if (data.table_data.length > 0) {
             localStorage.setItem('invoice_det', JSON.stringify(data));
             localStorage.setItem('gtot', data.main_data.grand_tot_all);
-        }      
-        
+        }
+
     }
 
     handleShowModal() {
@@ -150,14 +155,41 @@ class SalesReturn extends Component {
             });
     }
 
-    finalSubmit(data){
+    finalSubmit(data) {
         //console.log(data)
-        PostData('/api/generate_invoice_return.php',data)
-        .then((resp) => {
-            //console.log(resp);
-            if(resp.status === '400'){
-                this.props.history.replace(`/printinvoicer/${resp.type}/${resp.data}`);
-            }
+        PostData('/api/generate_invoice_return.php', data)
+            .then((resp) => {
+                //console.log(resp);
+                if (resp.status === '400') {
+                    this.props.history.replace(`/printinvoicer/${resp.type}/${resp.data}`);
+                }
+            })
+    }
+
+    editData(data, index) {
+        let temp = this.state.temp;
+        temp.splice(index, 1);
+        temp.push(data);
+        this.setState({
+            temp,
+            edit: false,
+            edit_data: []
+        })
+    }
+
+    onCancel() {
+        this.setState({
+            edit: false,
+            edit_data: []
+        })
+    }
+
+    onEdit(el, index) {
+        //        console.log(el)
+        this.setState({
+            edit_data: el,
+            edit: true,
+            inn: index
         })
     }
 
@@ -167,7 +199,16 @@ class SalesReturn extends Component {
                 <h3>Sales Return</h3>
                 <div className="row">
                     <div className="col-md-4">
-                        <TempInputReturn brands={this.state.brands} products={this.state.products} sendData={this.handleTempData.bind(this)} setTable={this.viewTable.bind(this)} />
+                        <TempInputReturn
+                            brands={this.state.brands}
+                            products={this.state.products}
+                            sendData={this.handleTempData.bind(this)}
+                            setTable={this.viewTable.bind(this)}
+                            edit={this.state.edit}
+                            edit_data={this.state.edit_data}
+                            inn={this.state.inn}
+                            editData={this.editData.bind(this)}
+                            onCancel={this.onCancel.bind(this)} />
                     </div>
 
                     <div className="col-md-3">
@@ -175,12 +216,19 @@ class SalesReturn extends Component {
                     </div>
 
                     <div className="col-md-5">
-                        <TempTable data={this.state.temp} onDelete={this.onDelete.bind(this)} onSetData={this.onSetData.bind(this)} />
+                        <TempTable
+                            data={this.state.temp}
+                            onDelete={this.onDelete.bind(this)}
+                            onSetData={this.onSetData.bind(this)}
+                            onEdit={this.onEdit.bind(this)} />
                     </div>
                 </div>
                 <hr />
                 <div className="row">
-                    <InvoiceDetReturn customers={this.state.customers} showModal={this.handleShowModal.bind(this)} finalSubmit={this.finalSubmit.bind(this)} />
+                    <InvoiceDetReturn
+                        customers={this.state.customers}
+                        showModal={this.handleShowModal.bind(this)}
+                        finalSubmit={this.finalSubmit.bind(this)} />
                     <InsertCutsomer show={this.state.modal} showModal={this.handleShowModal.bind(this)} fetchCustomer={this.fetchCustomer.bind(this)} />
                 </div>
             </div>

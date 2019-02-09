@@ -21,6 +21,8 @@ import InvoiceContainer from './Containers/InvoiceContainer';
 import PrintContainer from './Containers/PrintContainer';
 import PrintPurchase from './Components/Purchase/PrintPurchase';
 import Test from './Containers/Test';
+import ChallanContainer from './Containers/ChallanContainer';
+import PrintChallan from './Components/Challan/Print1/PrintChallan';
 
 
 class App extends Component {
@@ -40,6 +42,7 @@ class App extends Component {
             <Route path="/bills" component={Bills} />
             <Route path="/viewbills" component={ViewBills} />
             <Route path="/printinvoice/:id" component={PrintContainer} />
+            <Route path="/printchallan/:id" component={PrintContainer} />
             <Route path="/printinvoicer/:id" component={PrintContainer} />
             <Route path="/editbill/:id" component={EditBillContainer} />
             <Route path="/reports" component={Reports}/>
@@ -47,6 +50,7 @@ class App extends Component {
             <Route path="/master" component={MasterContainer} />
             <Route path="/stock" component={StockContainer} />
             <Route path="/invoice" component={InvoiceContainer} />
+            <Route path="/challan" component={ChallanContainer} />
             <Route path="/test" component={Test} />
             <Route component={NotFound} />
           </Switch>

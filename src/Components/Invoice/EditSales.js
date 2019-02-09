@@ -6,6 +6,9 @@ import InvoiceDet from './Edit/InvoiceDet';
 import { GetData, PostData } from './../../api/service';
 import InsertCutsomer from './Modal/InsertCustomer';
 
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 class EditSales extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +47,13 @@ class EditSales extends Component {
             table_data: [],
             invoice_main: [],
             invoice_det: [],
-            payment: []
+            payment: [],
+            edit: false,
+            edit_data: [],
+            table_data: [],
+            inn: '',
+            original_type: '',
+            id: ''
         }
     }
 
@@ -85,8 +94,11 @@ class EditSales extends Component {
         }
         PostData('/api/fetch_invoice_single.php', data)
             .then((resp) => {
+                
                 if (resp.status === '200') {
                     this.setState({
+                        original_type: type,
+                        id: resp.data[0][0].id,
                         invoice_main: resp.data[0][0],
                         temp: resp.data[1],
                         payment: JSON.parse(resp.data[0][0].payment),
@@ -96,7 +108,7 @@ class EditSales extends Component {
                 }
             })
 
-            localStorage.setItem('gtot','0.00');
+        localStorage.setItem('gtot', '0.00');
     }
 
     componentDidMount() {
@@ -134,11 +146,11 @@ class EditSales extends Component {
     }
 
     onSetData(data) {
-        if(data.table_data.length > 0){
+        if (data.table_data.length > 0) {
             localStorage.setItem('invoice_det', JSON.stringify(data));
             localStorage.setItem('gtot', data.main_data.grand_tot_all);
-        }      
-        
+        }
+
     }
 
     handleShowModal() {
@@ -166,15 +178,66 @@ class EditSales extends Component {
             });
     }
 
-    finalSubmit(data){
-        console.log(data);
-        PostData('/api/update_invoice.php',data)
-        .then((resp) => {
-            //console.log(resp)
-            if(resp.status === '200'){
+    finalSubmit(data) {
+        
 
-                this.props.history.replace(`/printinvoice/${resp.type}/${resp.data}`);
-            }
+        if(data.type === data.original_type){
+            this.finalSubmitConfirm(data);
+        }else{
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'The invoice will be migrated',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: this.finalSubmitConfirm.bind(this,data)
+                    },
+                    {
+                        label: 'No'
+                    }
+                ]
+            })
+        }
+
+        
+    }
+
+    finalSubmitConfirm = (data) => {
+        //console.log(data);
+       PostData('/api/update_invoice.php', data)
+            .then((resp) => {
+                //console.log(resp)
+                if (resp.status === '200') {
+
+                    this.props.history.replace(`/printinvoice/${resp.type}/${resp.data}`);
+                }
+            })  
+    }
+
+    editData(data, index) {
+        let temp = this.state.temp;
+        temp.splice(index, 1);
+        temp.push(data);
+        this.setState({
+            temp,
+            edit: false,
+            edit_data: []
+        })
+    }
+
+    onCancel() {
+        this.setState({
+            edit: false,
+            edit_data: []
+        })
+    }
+
+    onEdit(el, index) {
+        //        console.log(el)
+        this.setState({
+            edit_data: el,
+            edit: true,
+            inn: index
         })
     }
 
@@ -184,7 +247,16 @@ class EditSales extends Component {
                 <h2>Edit Sales Invoice</h2>
                 <div className="row">
                     <div className="col-md-4">
-                        <TempInput brands={this.state.brands} products={this.state.products} sendData={this.handleTempData.bind(this)} setTable={this.viewTable.bind(this)} />
+                        <TempInput
+                            brands={this.state.brands}
+                            products={this.state.products}
+                            sendData={this.handleTempData.bind(this)}
+                            setTable={this.viewTable.bind(this)}
+                            edit={this.state.edit}
+                            edit_data={this.state.edit_data}
+                            inn={this.state.inn}
+                            editData={this.editData.bind(this)}
+                            onCancel={this.onCancel.bind(this)} />
                     </div>
 
                     <div className="col-md-3">
@@ -192,12 +264,24 @@ class EditSales extends Component {
                     </div>
 
                     <div className="col-md-5">
-                        <TempTable data={this.state.temp} onDelete={this.onDelete.bind(this)} onSetData={this.onSetData.bind(this)} initialSet={this.state.invoice_det} />
+                        <TempTable
+                            data={this.state.temp}
+                            onDelete={this.onDelete.bind(this)}
+                            onSetData={this.onSetData.bind(this)}
+                            initialSet={this.state.invoice_det}
+                            onEdit={this.onEdit.bind(this)} />
                     </div>
                 </div>
                 <hr />
                 <div className="row">
-                    <InvoiceDet customers={this.state.customers} showModal={this.handleShowModal.bind(this)} finalSubmit={this.finalSubmit.bind(this)} initialSet={this.state.invoice_main} />
+                    <InvoiceDet
+                        customers={this.state.customers}
+                        showModal={this.handleShowModal.bind(this)}
+                        finalSubmit={this.finalSubmit.bind(this)}
+                        initialSet={this.state.invoice_main}
+                        original_type={this.state.original_type}
+                        id={this.state.id}
+                    />
                     <InsertCutsomer show={this.state.modal} showModal={this.handleShowModal.bind(this)} fetchCustomer={this.fetchCustomer.bind(this)} />
                 </div>
             </div>

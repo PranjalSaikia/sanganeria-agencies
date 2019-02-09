@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import InvoiceTable from './InvoiceTable';
-import {GetData, PostData} from './../../../api/service';
+import { GetData, PostData } from './../../../api/service';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Notifications, { notify } from 'react-notify-toast';
@@ -12,34 +12,34 @@ export default class Fetchinvoices extends Component {
             invoices: [],
             invoice_det: [],
             isLoading: true,
-            type : 1
+            type: 1
         }
-        
+
     }
 
-    componentDidMount(){
-        GetData('/api/fetch_invoice.php?type=1')
-        .then((resp) => {
-            
-            if(resp.status === '200'){
-            
-                this.setState({
-                    invoices: resp.data,
-                    isLoading: false,
-                    type: this.state.type
-                })
-            }
-        })
+    componentDidMount() {
+        GetData('/api/fetch_invoice.php?type=0')
+            .then((resp) => {
+
+                if (resp.status === '200') {
+
+                    this.setState({
+                        invoices: resp.data,
+                        isLoading: false,
+                        type: this.state.type
+                    })
+                }
+            })
     }
-    
-    onDeletePress(value, index){
+
+    onDeletePress(value, type, index) {
         confirmAlert({
             title: 'Confirm to delete',
             message: 'Are you sure to do this.',
             buttons: [
                 {
                     label: 'Yes',
-                    onClick: this.deleteData.bind(this, value, index)
+                    onClick: this.deleteData.bind(this, value, type, index)
                 },
                 {
                     label: 'No',
@@ -48,22 +48,21 @@ export default class Fetchinvoices extends Component {
         })
     }
 
-    deleteData(value, index){
+    deleteData(value, type, index) {
         //send the value now
 
         const data = {
             inv_no: value,
-            type: this.state.type
+            type: type
         }
 
         PostData('/api/delete_invoice.php', data)
-        .then((resp) => {
-            if(resp.status === '200'){
-                notify.show(resp.data, 'success', 3000);
-            }
-        })
-
-        let invoices  = this.state.invoices;
+            .then((resp) => {
+                if (resp.status === '200') {
+                    notify.show(resp.data, 'success', 3000);
+                }
+            })
+        let invoices = this.state.invoices;
         invoices.splice(index, 1);
         this.setState({
             invoices: invoices
@@ -71,13 +70,17 @@ export default class Fetchinvoices extends Component {
 
     }
     render() {
-    return (
-      <div>
-        <h1>Invoices (B2C)</h1>
-        <Notifications />
-        <hr/>
-        <InvoiceTable isLoading={this.state.isLoading} data={this.state.invoices} delete={this.onDeletePress.bind(this)} type={this.state.type} />
-      </div>
-    )
-  }
+        return (
+            <div>
+                <h1>Invoices (B2C)</h1>
+                <Notifications />
+                <hr />
+                <InvoiceTable
+                    isLoading={this.state.isLoading}
+                    data={this.state.invoices}
+                    delete={this.onDeletePress.bind(this)}
+                    type={this.state.type} />
+            </div>
+        )
+    }
 }

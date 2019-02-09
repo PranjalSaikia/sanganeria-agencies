@@ -11,6 +11,7 @@ class CurrentStockTable extends Component {
                     <td>{el.brand_name}</td>
                     <td>{el.product_name}</td>
                     <td>{el.barcode}</td>
+                    <td>{el.model}</td>
                     <td style={{textAlign: 'right'}}>{el.current_qty}</td>
                     <td style={{ textAlign: 'right' }}>{el.cost}</td>
                     <td style={{textAlign: 'right'}}>{el.mrp}</td>
@@ -23,13 +24,14 @@ class CurrentStockTable extends Component {
                 
                     <thead>
                         <tr>
-                            <td colSpan="7" align="center"><h4>Current Stock</h4></td>
+                            <td colSpan="8" align="center"><h4>Current Stock</h4></td>
                         </tr>
                         <tr className="alert-success">
                             <th>#</th>
                             <th>Brand Name</th>
                             <th>Product Name</th>
                             <th>Barcode</th>
+                            <th>Model No</th>
                             <th style={{textAlign: 'right'}}>Qty</th>
                             <th style={{ textAlign: 'right' }}>Cost (per unit)</th>
                             <th style={{textAlign: 'right'}}>MRP (per unit)</th>

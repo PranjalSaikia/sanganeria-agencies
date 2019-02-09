@@ -43,7 +43,9 @@ export default class PurchaseDetEdit extends Component {
             discount: 0.00,
             roff: 0.00,
             gtot: 0.00,
-            id: ''
+            id: '',
+            imei_temp: '',
+            imei: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -73,7 +75,9 @@ export default class PurchaseDetEdit extends Component {
             tax: 0.00,
             discount: 0.00,
             roff: 0.00,
-            gtot: 0.00
+            gtot: 0.00,
+            imei_temp: '',
+            imei: ''
         })
     }
 
@@ -100,6 +104,17 @@ export default class PurchaseDetEdit extends Component {
 
 
 
+    }
+
+    handleIMEI = (e) => {
+        if (e.target.value !== '') {
+            let imei = this.state.imei;
+            imei = imei + e.target.value + ','
+            this.setState({
+                imei,
+                imei_temp: ''
+            })
+        }
     }
 
     componentDidMount() {
@@ -364,6 +379,7 @@ export default class PurchaseDetEdit extends Component {
             cost: this.state.cost,
             mrp: this.state.mrp,
             total: this.state.total,
+            imei: this.state.imei
         }
 
         temp.push(data);
@@ -384,6 +400,7 @@ export default class PurchaseDetEdit extends Component {
             cost: '',
             mrp: '',
             total: '',
+            imei: ''
         })
 
         this.handleChangeTotal(total);
@@ -570,6 +587,29 @@ export default class PurchaseDetEdit extends Component {
                                         value={this.state.total}
                                         onChange={this.handleChange}
                                         required={true} />
+                                </td>
+                            </tr>
+
+                            <tr style={{ marginTop: '50px' }}>
+                                <td>
+                                    <label>Scan IMEI Here</label>
+                                    <input className="form-control input-sm"
+                                        type="text"
+                                        name="imei_temp"
+                                        onChange={this.handleChange}
+                                        onBlur={this.handleIMEI}
+                                        value={this.state.imei_temp}
+                                        placeholder="Scan IMEI Here"
+                                    />
+                                </td>
+                                <td colSpan="4">
+                                    <label>IMEI Stock</label>
+                                    <input className="form-control input-sm"
+                                        type="text"
+                                        name="imei"
+                                        onChange={this.handleChange}
+                                        value={this.state.imei}
+                                    />
                                 </td>
                                 <td><br />
                                     <button type="submit" className="btn btn-primary btn-sm">Add</button>

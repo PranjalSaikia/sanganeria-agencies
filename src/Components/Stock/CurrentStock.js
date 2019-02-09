@@ -10,22 +10,40 @@ class CurrentStock extends Component {
         super(props);
         this.state = {
             table_data: [],
-            isLoading: true
+            isLoading: true,
+            f_table_data: []
         }
     }
 
-    componentDidMount(){
+    onChange = (e) => {
+
+        let table_data = this.state.table_data;
+
+        let v = e.target.value;
+
+        let result = table_data.filter(el =>
+            el.bar.toLowerCase().search(
+                v.toLowerCase()) !== -1
+        )
+
+        this.setState({
+            f_table_data: result
+        })
+    }
+
+    componentDidMount() {
         GetData('/api/fetch_current_stock.php')
-        .then((resp) => {
-            if(resp.status === '200'){
-                this.setState({
-                    table_data: resp.data,
-                    isLoading: false
-                })
-            }else{
-                notify.show('Something Went Wrong', 'error', 3000);
-            }
-        });
+            .then((resp) => {
+                if (resp.status === '200') {
+                    this.setState({
+                        table_data: resp.data,
+                        f_table_data: resp.data,
+                        isLoading: false
+                    })
+                } else {
+                    notify.show('Something Went Wrong', 'error', 3000);
+                }
+            });
     }
 
     render() {
@@ -40,7 +58,7 @@ class CurrentStock extends Component {
                         trigger={() => <button className="btn btn-primary btn-sm"><i className="fa fa-print"></i> Print</button>}
                         content={() => this.componentRef}
                     /> &nbsp;
-    
+
                     <ReactHTMLTableToExcel
                         id="test-table-xls-button"
                         className="btn btn-sm btn-info"
@@ -49,8 +67,27 @@ class CurrentStock extends Component {
                         sheet="tablexls"
                         buttonText="Export to Excel" />
                 </div>
-                <hr />
-                {this.state.isLoading ? null : <CurrentStockTable ref={el => (this.componentRef = el)} data={this.state.table_data} />}
+
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '30px'
+                }}>
+                    <input
+                        className="form-control input-sm"
+                        placeholder="Type barcode or scan here to search"
+                        style={{
+                            width: '50%'
+                        }}
+                        name="search"
+                        onChange={this.onChange}
+                    />
+                </div>
+               
+                {this.state.isLoading ? null : <CurrentStockTable ref={el => (this.componentRef = el)} data={this.state.f_table_data} />}
             </div>
         )
     }

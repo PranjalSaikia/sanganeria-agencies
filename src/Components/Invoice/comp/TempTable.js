@@ -29,7 +29,7 @@ export default class TempTable extends Component {
     calculate(roff) {
         let data = this.props.data;
         let bill = 0;
-        if(roff === undefined || roff === ''){
+        if (roff === undefined || roff === '') {
             roff = 0;
         }
 
@@ -59,7 +59,7 @@ export default class TempTable extends Component {
 
         let gtot = bill + tax_temp;
 
-        let gtot_all = gtot - parseFloat(roff);
+        let gtot_all = gtot + parseFloat(roff);
 
 
         this.setState({
@@ -67,7 +67,7 @@ export default class TempTable extends Component {
             grand_tax: tax_temp.toFixed(2),
             grand_tot: gtot.toFixed(2),
             grand_tot_all: gtot_all.toFixed(2),
-            roff: roff,
+            roff
         })
         let new_data = {
             table_data: data,
@@ -75,7 +75,7 @@ export default class TempTable extends Component {
                 billed_amount: bill.toFixed(2),
                 grand_tax: tax_temp.toFixed(2),
                 grand_tot_all: gtot_all.toFixed(2),
-                roff: roff,
+                roff
             }
         }
 
@@ -99,22 +99,33 @@ export default class TempTable extends Component {
         this.props.onDelete(index);
         this.calculate();
     }
+
+    onEdit(el, index) {
+        this.props.onEdit(el, index);
+        this.calculate();
+    }
     render() {
         let items = this.props.data;
         let i = [];
         if (items.length > 0) {
-            i = items.map((el, index) =>
-                <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{el.barcode}</td>
-                    <td>{el.qty}</td>
-                    <td>{el.mrp}</td>
-                    <td>{el.disc_a}</td>
-                    <td>{el.amount}</td>
-                    <td>{el.tax}</td>
-                    <td>{el.gtot}</td>
-                    <td><a onClick={this.onDelete.bind(this, el.index)}><i className="fa fa-trash"></i></a></td>
-                </tr>
+            i = items.map((el, index) => {
+                let ii = "";
+                if(el.imei !== ""){
+                    ii = `(${el.imei})`;
+                }
+                return (
+                    <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{el.barcode} {ii}</td>
+                        <td>{el.qty}</td>
+                        <td>{el.amount}</td>
+                        <td>{el.tax}</td>
+                        <td>{el.gtot}</td>
+                        <td><a onClick={this.onEdit.bind(this, el, index)}><i className="fa fa-edit"></i></a></td>
+                        <td><a onClick={this.onDelete.bind(this, el.index)}><i className="fa fa-trash"></i></a></td>
+                    </tr>
+                )
+            }
             )
         }
         return (
@@ -125,11 +136,10 @@ export default class TempTable extends Component {
                             <th>#</th>
                             <th>Barcode</th>
                             <th>Qty</th>
-                            <th>Rate</th>
-                            <th>Disc</th>
                             <th>Amount</th>
                             <th>GST</th>
                             <th>Total</th>
+                            <th><i className="fa fa-edit"></i></th>
                             <th><i className="fa fa-trash"></i></th>
                         </tr>
                     </thead>

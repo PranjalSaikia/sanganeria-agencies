@@ -18,7 +18,7 @@ export default class FetchinvoicesR extends Component {
     }
 
     componentDidMount() {
-        GetData('/api/fetch_invoice_return.php?type=1')
+        GetData('/api/fetch_invoice_return.php?type=0')
             .then((resp) => {
 
                 if (resp.status === '200') {
@@ -48,12 +48,12 @@ export default class FetchinvoicesR extends Component {
         })
     }
 
-    deleteData(value, index) {
+    deleteData(value, type, index) {
         //send the value now
 
         const data = {
             inv_no: value,
-            type: this.state.type
+            type: type
         }
 
         PostData('/api/delete_invoice_return.php', data)
@@ -76,7 +76,11 @@ export default class FetchinvoicesR extends Component {
                 <h1>Return (B2C)</h1>
                 <Notifications />
                 <hr />
-                <ReturnTable isLoading={this.state.isLoading} data={this.state.invoices} delete={this.onDeletePress.bind(this)} type={this.state.type} />
+                <ReturnTable 
+                    isLoading={this.state.isLoading} 
+                    data={this.state.invoices} 
+                    delete={this.onDeletePress.bind(this)} 
+                    type={this.state.type} />
             </div>
         )
     }

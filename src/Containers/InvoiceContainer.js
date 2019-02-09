@@ -33,7 +33,7 @@ class InvoiceContainer extends Component {
 
                         <div className="container-fluid">
                             <Switch>
-                                <Route path="/invoice/sales" component={Sales} />
+                                <Route path="/invoice/sales" render={(props) => <Sales {...props} history={this.props.history} />} />
                                 <Route path="/invoice/return" component={SalesReturn} />
                                 <Route path="/invoice/edit/:type/:id" component={EditSales} />
                                 <Route path="/invoice/editr/:type/:id" component={EditSalesReturn} />

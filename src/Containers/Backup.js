@@ -22,7 +22,7 @@ class Backup extends Component {
 
     let password = this.state.password;
     if(password === 'backmeup'){
-      GetData('api/backup.php')
+      GetData('/api/backup.php')
         .then((resp) => {
           fileDownload(resp.data, 'filename.sql');
           this.setState({

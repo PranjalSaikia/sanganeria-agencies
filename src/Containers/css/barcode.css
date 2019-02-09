@@ -1,6 +1,5 @@
 .page-breaks{
     page-break-after: always;
-    page-break-before: always;
 }
 
 .barcode-style{
@@ -12,4 +11,8 @@
 .barcode-viewer{
     overflow-y: scroll;
     height: 60vh;
+}
+
+.print-table-barcode tbody tr{
+    page-break-after: always;
 }

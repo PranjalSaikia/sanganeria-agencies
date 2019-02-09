@@ -36,7 +36,8 @@ export default class InvoiceDetReturn extends Component {
             cheque_date: '',
             notpaid: false,
             roff: '',
-            c_charge: ''
+            c_charge: '',
+            narration: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -112,6 +113,7 @@ export default class InvoiceDetReturn extends Component {
             place_of_supply: this.state.place_of_supply,
             challan_no: this.state.challan_no,
             date_of_challan: this.state.date_of_challan,
+            narration: this.state.narration,
             po_no: this.state.po_no,
             date_of_po: this.state.date_of_po,
             transporter: this.state.transporter,
@@ -270,6 +272,18 @@ export default class InvoiceDetReturn extends Component {
                                         name="transporter"
                                         value={this.state.transporter}
                                         onChange={this.handleChange} />
+                                </td>
+                            </tr>
+                            <tr style={{ height: '60px' }}>
+                                <td colSpan="6">
+                                    <label>Remarks / Description</label>
+                                    <textarea
+                                        className="form-control input-sm"
+                                        name="narration"
+                                        value={this.state.narration}
+                                        onChange={this.handleChange}
+                                        placeholder="Remarks"
+                                    ></textarea>
                                 </td>
                             </tr>
                             <tr style={{ height: '60px' }}>

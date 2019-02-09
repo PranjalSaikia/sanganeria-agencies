@@ -22,7 +22,7 @@ export default class PrintInvoice extends Component {
         }
         PostData('/api/fetch_invoice_single.php', data)
             .then((resp) => {
-                console.log(resp);
+                //console.log(resp);
                 if (resp.status === '200') {
                     //console.log(resp.data[1]);
                     this.setState({
@@ -35,26 +35,61 @@ export default class PrintInvoice extends Component {
             })
     }
 
+    goodDate(date1){
+        if(date1 !== undefined){
+            let d = date1.split('-');
+            let new_date = d[2] + '-' + d[1] + '-' + d[0];
+            return new_date;
+        }
+        
+    }
+
+    pad(num){
+        if(num !== undefined){
+            let length = num.toString().length;
+            let l = "0";
+            for(var i=1; i < 4-length; i++){
+                l = l + "0";
+            }
+            
+            return l + num;
+
+        }
+        
+    }
+
+    
+
 
 
     render() {
+
+        
         let i = [];
         if (this.state.isLoading === false) {
             let invoice_det = this.state.invoice_det;
             i = invoice_det.map((el, index) =>
-                <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{el.barcode}</td>
-                    <td>{el.brand_name}</td>
-                    <td>{el.product_name} - {el.model}</td>
-                    <td>{el.hsn}</td>
-                    <td align="right">{el.qty}</td>
-                    <td align="right">{parseFloat(el.mrp).toFixed(2)}</td>
-                    <td align="right">{parseFloat(el.disc_a).toFixed(2)}</td>
-                    <td align="right">{parseFloat(el.amount).toFixed(2)}</td>
-                    <td align="right">{parseFloat(el.tax).toFixed(2)}</td>
-                    <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
-                </tr>
+            {   
+                let ii = "";
+                //console.log(el.imei)
+                if(el.imei !== null){
+                    ii = `IMEI: ${el.imei}`;
+                }
+                return (
+                    <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{el.brand_name} - {el.product_name} - {el.model} <br/>{ii}</td>
+                        <td>{el.hsn}</td>
+                        <td align="right">{el.qty} {el.unit}</td>
+                        <td align="right">{parseFloat(el.amount).toFixed(2)}</td>
+                        <td align="right">{(parseFloat(el.amount) * parseFloat(el.cgst) / 100).toFixed(2)}</td>
+                        <td align="right">{(parseFloat(el.amount) * parseFloat(el.sgst) / 100).toFixed(2)}</td>
+                        <td align="right">{(parseFloat(el.amount) * parseFloat(el.igst) / 100).toFixed(2)}</td>
+                        <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
+                    </tr>
+                )
+            }
+                
             )
         }
 
@@ -64,7 +99,7 @@ export default class PrintInvoice extends Component {
             if (mop === '1') {
                 j = <span>By Cash</span>;
             } else if (mop === '2') {
-                j = <span>By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.state.payment.cheque_date})</span>;
+                j = <span>By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.goodDate(this.state.payment.cheque_date)})</span>;
             } else if (mop === '3') {
                 j = <span>By Debit/Credit Card</span>;
             } else if (mop === '4') {
@@ -73,9 +108,9 @@ export default class PrintInvoice extends Component {
         }
 
         let type_text = "";
-        if (this.props.match.params.type === '1') {
+        if (this.state.invoice_main.type === '0') {
             type_text = "B2C";
-        } else if (this.props.match.params.type === '2') {
+        } else if (this.state.invoice_main.type === '1') {
             type_text = "B2B";
         }
         return (
@@ -101,10 +136,10 @@ export default class PrintInvoice extends Component {
                         <tbody>
                             <tr>
                                 <td width="50%">
-                                    <h4><b>Invoice No. {type_text}/{this.state.invoice_main.inv_no}</b></h4>
+                                    <h4><b>Invoice No. {type_text}/{this.pad(this.state.invoice_main.inv_no)}</b></h4>
                                 </td>
                                 <td width="50%" align="right">
-                                    <h4><b>Invoice Date. {this.state.invoice_main.date_of_invoice}</b></h4>
+                                    <h4><b>Invoice Date. {this.goodDate(this.state.invoice_main.date_of_invoice)}</b></h4>
                                 </td>
                             </tr>
                         </tbody>
@@ -149,15 +184,13 @@ export default class PrintInvoice extends Component {
                         <thead>
                             <tr className="alert-warning">
                                 <th>#</th>
-                                <th>Barcode</th>
-                                <th>Brand Name</th>
-                                <th>Product Name</th>
+                                <th>Description of the goods</th>
                                 <th>HSN</th>
-                                <th style={{ textAlign: 'right' }}>Qty(Pcs)</th>
-                                <th style={{ textAlign: 'right' }}>MRP(Rs.)</th>
-                                <th style={{ textAlign: 'right' }}>Discount Amount (Rs)</th>
+                                <th style={{ textAlign: 'right' }}>Qty</th>
                                 <th style={{ textAlign: 'right' }}>Taxable Amount (Rs)</th>
-                                <th style={{ textAlign: 'right' }}>GST</th>
+                                <th style={{ textAlign: 'right' }}>CGST</th>
+                                <th style={{ textAlign: 'right' }}>SGST</th>
+                                <th style={{ textAlign: 'right' }}>IGST</th>
                                 <th style={{ textAlign: 'right' }}>Total Amount (Rs.)</th>
                             </tr>
                         </thead>
@@ -166,16 +199,16 @@ export default class PrintInvoice extends Component {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colSpan="10" align="right">Round Off</td>
+                                <td colSpan="8" align="right">Round Off</td>
                                 <td align="right">(-) {parseFloat(this.state.invoice_main.roff).toFixed(2)}</td>
                             </tr>
                             <tr >
-                                <td colSpan="10" align="right"><b>Grand Total</b></td>
+                                <td colSpan="8" align="right"><b>Grand Total</b></td>
                                 <td align="right"><b>{parseFloat(this.state.invoice_main.gtot).toFixed(2)}</b></td>
                             </tr>
                         </tfoot>
                     </table>
-
+                    <div className="invoice-footer">
                     <table width="100%" className="table table-bordered">
                         <tbody>
                             <tr>
@@ -196,7 +229,12 @@ export default class PrintInvoice extends Component {
                                         </div>
                                     </div>
                                 </td>
-                                <td><b>Payment Details</b><br />Amount Paid: <b>{parseFloat(this.state.payment.amount_paid).toFixed(2)}</b>, Mode of Payment: <b>{j}</b></td>
+                                <td>
+                                    <b>Payment Details</b><br />Amount Paid: <b>{parseFloat(this.state.payment.amount_paid).toFixed(2)}</b>, Mode of Payment: <b>{j}</b>
+                                    <hr/>
+                                    <b>Remarks</b><br />
+                                    {this.state.invoice_main.narration}
+                                    </td>
                             </tr>
                         </tbody>
                     </table>
@@ -222,6 +260,7 @@ export default class PrintInvoice extends Component {
                             </tr>
                         </tbody>
                     </table>
+                    </div>
 
                 </div>
             </div>

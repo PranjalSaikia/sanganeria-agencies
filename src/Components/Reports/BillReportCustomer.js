@@ -147,7 +147,7 @@ class BillReportCustomer extends Component {
                         buttonText="Export to Excel" />
                 </div>
                 <hr />
-                <CustomerWiseBill ref={el => (this.componentRef = el)} results={this.state.results} />
+                <CustomerWiseBill ref={el => (this.componentRef = el)} results={this.state.results} type={this.state.type} />
             </div>
         )
     }
