@@ -26,7 +26,7 @@ export default class InvoiceTable extends Component {
         let i = [];
         if (this.props.isLoading === false) {
             let data = this.props.data;
-            console.log(data)
+            //console.log(data)
             i = data.map((el, index) =>
                 <tr key={index}>
                     <td>{this.pad(el.challan_no)}</td>

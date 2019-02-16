@@ -259,9 +259,9 @@ export default class InvoiceDet extends Component {
                                         onChange={this.handleChange} >
                                         <option value="1">Cash</option>
                                         <option value="2">Cheque</option>
-                                        <option value="3">VIJAYA BANK</option>
-                                        <option value="4">HDFC BANK</option>
-                                        <option value="5">PAYTM</option>
+                                        <option value="3">Debit Card</option>
+                                        <option value="4">Finance</option>
+                                        <option value="5">Not Paid</option>
                                     </select>
                                     {j}
                                 </td>

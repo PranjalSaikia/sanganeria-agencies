@@ -10,6 +10,7 @@ import EditSales from '../Components/Invoice/EditSales';
 import EditSalesReturn from '../Components/Invoice/EditSalesReturn';
 import FetchinvoicesB from '../Components/Invoice/Show/FetchinvoicesB';
 import FetchinvoicesRB from '../Components/Invoice/Show/FetchInvoicesRB';
+import SalesFromChallan from '../Components/Invoice/SalesFromChallan';
 
 class InvoiceContainer extends Component {
     render() {
@@ -34,6 +35,7 @@ class InvoiceContainer extends Component {
                         <div className="container-fluid">
                             <Switch>
                                 <Route path="/invoice/sales" render={(props) => <Sales {...props} history={this.props.history} />} />
+                                <Route path="/invoice/challan" render={(props) => <SalesFromChallan {...props} history={this.props.history} />} />
                                 <Route path="/invoice/return" component={SalesReturn} />
                                 <Route path="/invoice/edit/:type/:id" component={EditSales} />
                                 <Route path="/invoice/editr/:type/:id" component={EditSalesReturn} />

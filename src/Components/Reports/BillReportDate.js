@@ -10,7 +10,8 @@ class BillReportDate extends Component {
         this.state = {
             datefrom: '',
             dateto: '',
-            type: 1,
+            type: 0,
+            mop: 0,
             results: []
         }
 
@@ -31,7 +32,8 @@ class BillReportDate extends Component {
         const data = {
             date_from: this.state.datefrom,
             date_to: this.state.dateto,
-            type: this.state.type
+            type: this.state.type,
+            mop: this.state.mop
         }
 
         //post and fetch data
@@ -61,8 +63,8 @@ class BillReportDate extends Component {
                                 name="type"
                                 value={this.state.type}
                                 onChange={this.handleChange}>
-                                <option value="1">B2C</option>
-                                <option value="2">B2B</option>
+                                <option value="0">B2C</option>
+                                <option value="1">B2B</option>
                             </select>
                         </div>
                         <div className="form-group">
@@ -87,6 +89,22 @@ class BillReportDate extends Component {
                                 value={this.state.dateto}
                                 required={true}
                             />
+                        </div>
+
+                        <div className="form-group">
+                            <label>&nbsp; Mode of Payment &nbsp;</label>
+                            <select
+                                className="form-control input-sm"
+                                name="mop"
+                                value={this.state.mop}
+                                onChange={this.handleChange} >
+                                <option value="0">All</option>
+                                <option value="1">Cash</option>
+                                <option value="2">Cheque</option>
+                                <option value="3">Debit Card</option>
+                                <option value="4">Finance</option>
+                                <option value="5">Not Paid</option>
+                            </select>
                         </div>
 
                         <div className="form-group">

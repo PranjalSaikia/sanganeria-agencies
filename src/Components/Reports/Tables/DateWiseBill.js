@@ -18,13 +18,15 @@ class DateWiseBill extends Component {
         } else if (payment.mop === '3') {
           str = "By Debit/Credit Card";
         } else if (payment.mop === '4') {
+          str = "Finance";
+        } else if (payment.mop === '5') {
           str = "Not paid";
         }
 
         let j = "";
-        if (this.props.type === 1) {
+        if (this.props.type === '0') {
           j = "B2C/";
-        } else if (this.props.type === 2) {
+        } else if (this.props.type === '1') {
           j = "B2B/";
         }
 
@@ -40,6 +42,7 @@ class DateWiseBill extends Component {
           <tr key={index}>
             <td>{index + 1}</td>
             <td>{j}{el.inv_no}</td>
+            <td>{el.challan_no}</td>
             <td>{el.date_of_invoice}</td>
             <td>{el.customer_name}</td>
             <td>
@@ -67,6 +70,7 @@ class DateWiseBill extends Component {
             <tr className="alert-success">
               <th>#</th>
               <th>Invoice No</th>
+              <th>Challan No</th>
               <th>Date</th>
               <th>Customer Name</th>
               <th>Particulars</th>

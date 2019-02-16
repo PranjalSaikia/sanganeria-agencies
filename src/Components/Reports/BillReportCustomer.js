@@ -11,7 +11,7 @@ class BillReportCustomer extends Component {
             customer_id: '',
             datefrom: '',
             dateto: '',
-            type: 1,
+            type: 0,
             customer: [],
             results: []
         }
@@ -81,8 +81,8 @@ class BillReportCustomer extends Component {
                                 name="type"
                                 value={this.state.type}
                                 onChange={this.handleChange}>
-                                <option value="1">B2C</option>
-                                <option value="2">B2B</option>
+                                <option value="0">B2C</option>
+                                <option value="1">B2B</option>
                             </select>
                         </div>
 

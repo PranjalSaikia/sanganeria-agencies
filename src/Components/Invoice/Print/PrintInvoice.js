@@ -103,6 +103,8 @@ export default class PrintInvoice extends Component {
             } else if (mop === '3') {
                 j = <span>By Debit/Credit Card</span>;
             } else if (mop === '4') {
+                j = <span style={{ color: 'red' }}>Finance</span>
+            } else if (mop === '5') {
                 j = <span style={{ color: 'red' }}>Not Paid</span>
             }
         }

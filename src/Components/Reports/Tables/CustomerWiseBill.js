@@ -15,12 +15,15 @@ class CustomerWiseBill extends Component {
                 } else if (payment.mop === '3') {
                     str = "By Debit/Credit Card";
                 } else if (payment.mop === '4') {
+                    str = "Finance";
+                }
+                else if (payment.mop === '5') {
                     str = "Not paid";
                 }
                 let j = "";
-                if (this.props.type === 1) {
+                if (this.props.type === '0') {
                     j = "B2C/";
-                } else if (this.props.type === 2) {
+                } else if (this.props.type === '1') {
                     j = "B2B/";
                 }
 

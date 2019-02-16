@@ -68,15 +68,26 @@ export default class PrintChallan extends Component {
         let i = [];
         if (this.state.isLoading === false) {
             let invoice_det = this.state.invoice_det;
-            i = invoice_det.map((el, index) =>
-                <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{el.brand_name} - {el.product_name} - {el.model}</td>
-                    <td>{el.hsn}</td>
-                    <td align="right">{el.qty} {el.unit}</td>
-                    <td align="right">{parseFloat(el.mrp).toFixed(2)}</td>
-                    <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
-                </tr>
+            i = invoice_det.map((el, index) => {
+
+                let i = "";
+                if(el.status === '2'){
+                    i = <div className="badge" style={{backgroundColor: 'green'}}><i className="fa fa-check"> Sold</i></div>
+                } else if(el.status === '1'){
+                    i = <div className="badge" style={{ backgroundColor: 'blue' }}><i className="fa fa-check"> Returned</i></div>
+                }
+                return(
+                    <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{el.brand_name} - {el.product_name} - {el.model} {i}</td>
+                        <td>{el.hsn}</td>
+                        <td align="right">{el.qty} {el.unit}</td>
+                        <td align="right">{parseFloat(el.mrp).toFixed(2)}</td>
+                        <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
+                    </tr>
+                )
+            }
+                
             )
         }
 

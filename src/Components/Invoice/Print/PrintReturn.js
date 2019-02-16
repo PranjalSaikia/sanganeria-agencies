@@ -64,10 +64,12 @@ export default class PrintReturn extends Component {
             if (mop === '1') {
                 j = <span>By Cash</span>;
             } else if (mop === '2') {
-                j = <span>By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.state.payment.cheque_date})</span>;
+                j = <span>By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.goodDate(this.state.payment.cheque_date)})</span>;
             } else if (mop === '3') {
                 j = <span>By Debit/Credit Card</span>;
             } else if (mop === '4') {
+                j = <span style={{ color: 'red' }}>Finance</span>
+            } else if (mop === '5') {
                 j = <span style={{ color: 'red' }}>Not Paid</span>
             }
         }

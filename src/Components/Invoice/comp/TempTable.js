@@ -110,7 +110,7 @@ export default class TempTable extends Component {
         if (items.length > 0) {
             i = items.map((el, index) => {
                 let ii = "";
-                if(el.imei !== ""){
+                if (el.imei !== "" || el.imei !== 'undefined'){
                     ii = `(${el.imei})`;
                 }
                 return (

@@ -62,6 +62,50 @@ class TempInput extends Component {
                     f_products: results_1,
                     product_id: results[0].product_id,
                 })
+
+                //gst
+
+                let sgst = results[0].sgst;
+                let cgst = results[0].cgst;
+                let igst = results[0].igst;
+
+                if (this.state.gst === '1') {
+                    igst = '0.00';
+                    this.setState({
+                        cgst: results[0].cgst,
+                        sgst: results[0].sgst,
+                        igst: '0.00'
+                    })
+                } else {
+                    cgst = '0.00';
+                    sgst = '0.00';
+                    this.setState({
+                        cgst: '0.00',
+                        sgst: '0.00',
+                        igst: results[0].igst
+                    })
+                }
+
+                //total back calculation
+
+                let gtot = this.props.edit_data.gtot;
+                //console.log(gtot)
+
+                //let total = parseFloat(gtot) - (parseFloat(gtot) * (parseFloat(sgst) + parseFloat(cgst) + parseFloat(igst)) / 100);
+
+                let total = parseFloat(gtot) / ((100 + parseFloat(sgst) + parseFloat(cgst) + parseFloat(igst)) / 100);
+
+                let cgst_a = parseFloat(cgst) * parseFloat(total) / 100;
+                let sgst_a = parseFloat(sgst) * parseFloat(total) / 100;
+                let igst_a = parseFloat(igst) * parseFloat(total) / 100;
+                let tax = cgst_a + sgst_a + igst_a;
+                //console.log(cgst_a)
+
+                this.setState({
+                    tax: tax.toFixed(2),
+                    amount: total.toFixed(2)
+                })
+
             }
         }
     }

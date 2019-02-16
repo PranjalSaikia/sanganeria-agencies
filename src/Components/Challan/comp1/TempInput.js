@@ -24,7 +24,8 @@ class TempInput extends Component {
                 qty: ''
             },
             gst: '1',
-            btnDis: true
+            btnDis: true,
+            imei: ''
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,11 +54,13 @@ class TempInput extends Component {
                 let products = this.props.products;
                 let results = products.filter((el) => el.barcode === barcode);
                 let results_1 = products.filter((el) => el.brand_id === results[0].brand_id);
+                
                 this.setState({
                     ...this.props.edit_data,
                     brand_id: results[0].brand_id,
                     f_products: results_1,
                     product_id: results[0].product_id,
+                    
                 })
             }
         }
@@ -530,6 +533,7 @@ class TempInput extends Component {
             igst: this.state.igst,
             tax: this.state.tax,
             gtot: this.state.gtot,
+            imei: this.state.imei,
         }
 
         if (this.props.edit) {
@@ -557,7 +561,8 @@ class TempInput extends Component {
             errors: {
                 qty: ''
             },
-            btnDis: true
+            btnDis: true,
+            imei: ''
         })
 
 
@@ -664,6 +669,19 @@ class TempInput extends Component {
                                         <option value="">Choose Product</option>
                                         {j}
                                     </select>
+                                </td>
+                            </tr>
+                            <tr style={{ height: '40px' }}>
+                                <td><b>IMEI</b></td>
+                                <td colSpan="3">
+                                    <span style={{ color: 'red' }}>{this.state.errors['imei']}</span>
+                                    <input
+                                        className="form-control input-sm"
+                                        placeholder="IMEI or Serial Number"
+                                        name="imei"
+                                        onChange={this.handleChange}
+                                        value={this.state.imei}
+                                        />
                                 </td>
                             </tr>
                             <tr style={{ height: '40px' }}>

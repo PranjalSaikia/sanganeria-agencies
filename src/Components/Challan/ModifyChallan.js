@@ -49,7 +49,7 @@ class ModifyChallan extends Component {
             }
             PostData(`/api/fetch_challan_single_new.php`, data_post)
             .then((resp) => {
-                console.log(resp)
+                this.props.history.replace('/invoice/challan',resp.data);
             })
         }
         
