@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PaymentMulti from '../comp/PaymentMulti';
 
 export default class InvoiceDet extends Component {
     constructor(props) {
@@ -37,7 +38,8 @@ export default class InvoiceDet extends Component {
             roff: '',
             c_charge: '',
             narration: '',
-            errors: []
+            errors: [],
+            payments: []
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -65,9 +67,7 @@ export default class InvoiceDet extends Component {
             po_no: invoice.po_no,
             date_of_po: invoice.date_of_po,
             transporter: invoice.transporter,
-            mop: payment.mop,
-            amount_paid: payment.amount_paid,
-            balance: payment.balance,
+            payments: payment,
             narration: invoice.narration
         })
     }
@@ -86,10 +86,8 @@ export default class InvoiceDet extends Component {
                 po_no: invoice.po_no,
                 date_of_po: invoice.date_of_po,
                 transporter: invoice.transporter,
-                mop: payment.mop,
-                amount_paid: payment.amount_paid,
-                balance: payment.balance,
-                narration: invoice.narration
+                payments: payment,
+                narration: invoice.narration,
             })
         }
     }
@@ -156,14 +154,7 @@ export default class InvoiceDet extends Component {
                 date_of_invoice: this.state.date_of_invoice,
                 customer_id: this.state.customer_id,
                 inv_no: invoice.inv_no,
-                payment: {
-                    mop: this.state.mop,
-                    amount_receivable: invoice_det.main_data.grand_tot_all,
-                    cheque_no: this.state.cheque_no,
-                    cheque_date: this.state.cheque_date,
-                    amount_paid: this.state.amount_paid,
-                    balance: this.state.balance,
-                },
+                payment: this.state.payments,
                 gtot: invoice_det.main_data.grand_tot_all,
                 type: type,
                 place_of_supply: this.state.place_of_supply,
@@ -187,6 +178,12 @@ export default class InvoiceDet extends Component {
         }
         
 
+    }
+
+    onPaymentChange = (data) => {
+        this.setState({
+            payments: data
+        })
     }
 
 
@@ -250,38 +247,11 @@ export default class InvoiceDet extends Component {
                                 <td><br />
                                     <button className="btn btn-sm" type="button" onClick={this.props.showModal}>+ Customer</button>
                                 </td>
-                                <td>
-                                    <label>Mode of Payment</label>
-                                    <select
-                                        className="form-control input-sm"
-                                        name="mop"
-                                        value={this.state.mop}
-                                        onChange={this.handleChange} >
-                                        <option value="1">Cash</option>
-                                        <option value="2">Cheque</option>
-                                        <option value="3">Debit Card</option>
-                                        <option value="4">Finance</option>
-                                        <option value="5">Not Paid</option>
-                                    </select>
-                                    {j}
-                                </td>
-                                <td>
-                                    <label>Amount Paid</label>
-                                    <input
-                                        className="form-control input-sm"
-                                        name="amount_paid"
-                                        value={this.state.amount_paid}
-                                        onChange={this.handleChange}
-                                        readOnly={this.state.notpaid} />
-
-                                </td>
-                                <td>
-                                    <label>Balance</label>
-                                    <input
-                                        className="form-control input-sm"
-                                        name="balance"
-                                        value={this.state.balance}
-                                        onChange={this.handleChange} />
+                                <td colSpan="3">
+                                    <PaymentMulti
+                                        onPaymentChange={this.onPaymentChange.bind(this)}
+                                        value={this.state.payments}
+                                    />
                                 </td>
                             </tr>
                             <tr style={{ height: '60px' }}>

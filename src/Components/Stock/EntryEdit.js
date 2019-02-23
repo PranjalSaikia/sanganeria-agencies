@@ -39,7 +39,15 @@ export default class EntryEdit extends Component {
             po_no: '',
             supplier_id: '',
             imei_temp: '',
-            imei: ''
+            imei: '',
+            discount: '0.00',
+            discount_amount: '0.00',
+            cgst: '0.00',
+            sgst: '0.00',
+            igst: '0.00',
+            total: '0.00',
+            sub_total: '0.00',
+            tax: '0.00',
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -68,7 +76,15 @@ export default class EntryEdit extends Component {
             id: '',
             supplier_id: '',
             imei_temp: '',
-            imei: ''
+            imei: '',
+            discount: '0.00',
+            discount_amount: '0.00',
+            cgst: '0.00',
+            tax: '0.00',
+            sgst: '0.00',
+            igst: '0.00',
+            total: '0.00',
+            sub_total: '0.00',
         })
     }
 
@@ -93,7 +109,15 @@ export default class EntryEdit extends Component {
             mrp: editData[0].mrp,
             supplier_id: editData[0].supplier_id,
             id: editData[0].id,
-            imei: editData[0].imei
+            imei: editData[0].imei,
+            discount: editData[0].discount,
+            discount_amount: editData[0].discount_amount,
+            cgst: editData[0].cgst,
+            sgst: editData[0].sgst,
+            igst: editData[0].igst,
+            total: editData[0].total,
+            sub_total: editData[0].sub_total,
+            tax: editData[0].tax,
         })
     }
 
@@ -243,7 +267,15 @@ export default class EntryEdit extends Component {
             id: this.state.id,
             supplier_id: this.state.supplier_id,
             type: 'edit',
-            imei: this.state.imei
+            imei: this.state.imei,
+            discount: this.state.discount,
+            discount_amount: this.state.discount_amount,
+            cgst: this.state.cgst,
+            sgst: this.state.sgst,
+            igst: this.state.igst,
+            sub_total: this.state.sub_total,
+            total: this.state.total,
+            tax: this.state.tax,
         }
 
         console.log(data)

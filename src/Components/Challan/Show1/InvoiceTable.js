@@ -37,8 +37,8 @@ export default class InvoiceTable extends Component {
                     <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
                     <td>{el.is_modified === '0' ? <Link to={`/challan/${el.challan_no}`}><i className="fa fa-file"> Modify</i></Link>: <i style={{color: 'green'}} className="fa fa-check"> Modified</i>}</td>
                     <td><Link to={`/printchallan/${this.props.type}/${el.challan_no}`}><i className="fa fa-print"></i></Link></td>
-                    <td><Link to={`/challan/edit/${this.props.type}/${el.challan_no}`}><i className="fa fa-pencil"></i></Link></td>
-                    <td><i className="fa fa-trash" onClick={this.onDelete.bind(this, el.challan_no, index)}></i></td>
+                    <td>{el.is_modified === '0' ? <Link to={`/challan/edit/${this.props.type}/${el.challan_no}`}><i className="fa fa-pencil"></i></Link> : null}</td>
+                    <td>{el.is_modified === '0' ? <i className="fa fa-trash" onClick={this.onDelete.bind(this, el.challan_no, index)}></i> : null}</td>
                 </tr>)
         }
         return (

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Select from 'react-select'
 
 
 export default class EntryForm extends Component {
@@ -236,8 +237,14 @@ export default class EntryForm extends Component {
       let brands_here = this.props.brands;
       let i = [];
       if (brands_here.length > 0) {
-          i = brands_here.map((el, index) =>
-              <option key={index} value={el.brand_id}>{el.brand_name}</option>
+          i = brands_here.map((el, index) =>/* {
+              return ({
+                  label: el.brand_name,
+                  value: el.brand_id
+              })
+          } */
+        <option key={index} value={el.brand_id}>{el.brand_name}</option>
+    
           )
       }
 
@@ -274,6 +281,13 @@ export default class EntryForm extends Component {
                             </td>
                             <td>
                                 <label>Select Brand &nbsp;</label>
+                                {/* <Select
+                                    name="brand_id"
+                                    onChange={this.handleChange}
+                                    value={this.state.brand_id}
+                                    options={i}
+                                    required={true} 
+                                /> */}
                                 <select className="form-control input-sm"
                                     name="brand_id"
                                     onChange={this.handleChange}
@@ -282,7 +296,7 @@ export default class EntryForm extends Component {
                                 >
                                     <option value="">Choose Brand</option>
                                     {i}
-                                </select>
+                                </select> 
                             </td>
 
                             <td width="25%">

@@ -59,31 +59,36 @@ export default class PurchaseEdit extends Component {
                 if (resp.status === '200') {
                     this.setState({
                         f_data: resp.data,
-                        isLoading:false
+                        isLoading: false
                     })
                 }
             })
     }
 
     componentDidMount() {
-    
+
         this._initialFetch();
     }
 
 
 
     render() {
-        if(!this.state.isLoading){
+        if (!this.state.isLoading) {
             return (
                 <div className="container-fluid">
                     <Notifications />
                     <h3>Purchase Edit</h3>
-                    <PurchaseDetEdit history={this.props.history} brands={this.state.brands} data={this.state.f_data} products={this.state.products} suppliers={this.state.suppliers} />
+                    <PurchaseDetEdit
+                        history={this.props.history}
+                        brands={this.state.brands}
+                        data={this.state.f_data}
+                        products={this.state.products}
+                        suppliers={this.state.suppliers} />
                 </div>
             )
-        }else{
+        } else {
             return null;
         }
-        
+
     }
 }

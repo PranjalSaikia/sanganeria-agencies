@@ -14,10 +14,10 @@ export default class PrintPurchase extends Component {
 
     componentDidMount() {
         let id = this.props.id;
-        
+
         const data = {
             id: id,
-            
+
         }
         PostData('/api/fetch_purchase_single.php', data)
             .then((resp) => {
@@ -48,12 +48,17 @@ export default class PrintPurchase extends Component {
                     <td align="right">{el.qty} <br /> ({el.imei})</td>
                     <td align="right">{parseFloat(el.mrp).toFixed(2)}</td>
                     <td align="right">{parseFloat(el.cost).toFixed(2)}</td>
+                    <td align="right">{parseFloat(el.discount).toFixed(2)}</td>
+                    <td align="right">{parseFloat(el.discount_amount).toFixed(2)}</td>
+                    <td align="right">{(parseFloat(el.cgst) * parseFloat(el.sub_total) / 100).toFixed(2)}</td>
+                    <td align="right">{(parseFloat(el.sgst) * parseFloat(el.sub_total) / 100).toFixed(2)}</td>
+                    <td align="right">{(parseFloat(el.igst) * parseFloat(el.sub_total) / 100).toFixed(2)}</td>
                     <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
                 </tr>
             )
         }
 
-        
+
         return (
             <div className="container">
                 <div className="invoice">
@@ -88,7 +93,7 @@ export default class PrintPurchase extends Component {
                                 <td width="25%">
                                     <h4><b>Puchase Bill Date. {this.state.invoice_main.purchase_bill_date}</b></h4>
                                 </td>
-                                
+
                             </tr>
                         </tbody>
                     </table>
@@ -138,6 +143,11 @@ export default class PrintPurchase extends Component {
                                 <th style={{ textAlign: 'right' }}>Qty(Pcs)</th>
                                 <th style={{ textAlign: 'right' }}>MRP(Rs.)</th>
                                 <th style={{ textAlign: 'right' }}>Cost (Rs)</th>
+                                <th style={{ textAlign: 'right' }}>Discount (%)</th>
+                                <th style={{ textAlign: 'right' }}>Discount (Rs)</th>
+                                <th style={{ textAlign: 'right' }}>CGST (Rs)</th>
+                                <th style={{ textAlign: 'right' }}>SGST (Rs)</th>
+                                <th style={{ textAlign: 'right' }}>IGST (Rs)</th>
                                 <th style={{ textAlign: 'right' }}>Total Amount (Rs.)</th>
                             </tr>
                         </thead>
@@ -146,27 +156,27 @@ export default class PrintPurchase extends Component {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colSpan="8" align="right">Bill Total</td>
+                                <td colSpan="13" align="right">Bill Total</td>
                                 <td align="right">{parseFloat(this.state.invoice_main.bill_total).toFixed(2)}</td>
                             </tr>
                             <tr>
-                                <td colSpan="8" align="right">GST (CGST@{this.state.invoice_main.cgst}% &nbsp;&nbsp;  SGST@{this.state.invoice_main.sgst}% &nbsp;&nbsp; IGST@{this.state.invoice_main.igst}%)</td>
-                                <td align="right">{parseFloat(this.state.invoice_main.tax).toFixed(2)}</td>
+                                <td colSpan="13" align="right">Special Discount</td>
+                                <td align="right">{parseFloat(this.state.invoice_main.discount).toFixed(2)}</td>
                             </tr>
                             <tr>
-                                <td colSpan="8" align="right">Round Off</td>
+                                <td colSpan="13" align="right">Round Off</td>
                                 <td align="right">{parseFloat(this.state.invoice_main.roff).toFixed(2)}</td>
                             </tr>
                             <tr >
-                                <td colSpan="8" align="right"><b>Grand Total</b></td>
+                                <td colSpan="13" align="right"><b>Grand Total</b></td>
                                 <td align="right"><b>{parseFloat(this.state.invoice_main.gtot).toFixed(2)}</b></td>
                             </tr>
                         </tfoot>
                     </table>
 
-                    
 
-                    
+
+
 
                 </div>
             </div>

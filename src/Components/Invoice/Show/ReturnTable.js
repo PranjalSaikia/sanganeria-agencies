@@ -5,13 +5,20 @@ export default class ReturnTable extends Component {
     onDelete(value, type, index) {
         this.props.delete(value, type, index);
     }
+    getType(value) {
+        if (parseInt(value) === 0) {
+            return 'B2C/';
+        } else if (parseInt(value) === 1) {
+            return 'B2B/';
+        }
+    }
     render() {
         let i = [];
         if (this.props.isLoading === false) {
             let data = this.props.data;
             i = data.map((el, index) =>
                 <tr key={index}>
-                    <td>{el.inv_no}</td>
+                    <td>{this.getType(el.type)}{el.inv_no}</td>
                     <td>{el.date_of_invoice}</td>
                     <td>{el.customer_name}</td>
                     <td align="right">{parseFloat(el.bill_tot).toFixed(2)}</td>
@@ -24,7 +31,7 @@ export default class ReturnTable extends Component {
         }
         return (
             <div>
-                <table width="100%" className="table table-bordered">
+                <table width="100%" className="table table-bordered" id="table-to-xls">
                     <thead>
                         <tr className="alert-success">
                             <th>Invoice No</th>

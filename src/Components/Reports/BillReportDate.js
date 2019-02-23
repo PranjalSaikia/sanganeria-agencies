@@ -131,7 +131,10 @@ class BillReportDate extends Component {
                         buttonText="Export to Excel" />
                 </div>
                 <hr />
-                <DateWiseBill ref={el => (this.componentRef = el)} results={this.state.results} type={this.state.type} />
+                <DateWiseBill
+                    ref={el => (this.componentRef = el)}
+                    results={this.state.results}
+                    type={this.state.type} />
             </div>
         )
     }

@@ -21,10 +21,11 @@ class Backup extends Component {
   onButtonClick(){
 
     let password = this.state.password;
+    let d = new Date();
     if(password === 'backmeup'){
       GetData('/api/backup.php')
         .then((resp) => {
-          fileDownload(resp.data, 'filename.sql');
+          fileDownload(resp.data, `database-backup-${d.getMilliseconds()}.sql`);
           this.setState({
             password: ''
           })

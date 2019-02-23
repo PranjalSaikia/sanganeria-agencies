@@ -47,7 +47,7 @@ export default class InvoiceTable extends Component {
         }
         return (
             <div>
-                <table width="100%" className="table table-bordered">
+                <table width="100%" className="table table-bordered" id="table-to-xls">
                     <thead>
                         <tr className="alert-success">
                             <th>Invoice No</th>

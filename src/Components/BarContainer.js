@@ -17,7 +17,8 @@ export default class BarContainer extends Component {
             print:{
                 no_barcode: '',
                 bar: ''
-            }
+            },
+            error: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -63,6 +64,28 @@ export default class BarContainer extends Component {
                 barcode: e.target.value
             })
         }
+
+        if (e.target.name === 'barcode') {
+            let barcode = e.target.value;
+            let products = this.state.products;
+            this.setState({
+                f_products: products
+            })
+            let results = products.filter((el) => el.barcode === barcode);
+            let product_id = '';
+            let brand_id = '';
+            if(Array.isArray(results) && results.length > 0){
+                
+                product_id = barcode;
+                brand_id = results[0]['brand_id'];
+            }
+            
+            this.setState({
+                brand_id: brand_id,
+                product_id: product_id,
+            })
+
+        }
     }
 
     componentDidMount(){
@@ -84,6 +107,33 @@ export default class BarContainer extends Component {
         })
 
 
+    }
+
+    handleSubmitSecond = (e) => {
+        e.preventDefault();
+
+        let barcode = this.state.barcode;
+        let no_barcode = this.state.no_barcode;
+
+        //validate availability of the barcode
+
+        let products = this.state.products;
+        let r = products.filter(el => el.barcode === barcode);
+        if(Array.isArray(r) && r.length > 0){
+            let print = this.state.print;
+            print['bar'] = barcode;
+            print['no_barcode'] = no_barcode;
+
+            this.setState({
+                print: print,
+                status: true,
+                error: ''
+            })
+        }else{
+            this.setState({
+                error: 'No Barcode found, Please insert it correctly'
+            })
+        }
     }
 
     onCloseClick(){
@@ -123,7 +173,7 @@ export default class BarContainer extends Component {
 
                 <form className="form form-inline" onSubmit={this.handleSubmit}>
                     <div className="form-group">
-                        <label>Select Brand &nbsp;</label>
+                        <label>Brand &nbsp;</label>
                         <select className="form-control input-sm"
                             name="brand_id"
                             onChange={this.handleChange}
@@ -136,7 +186,7 @@ export default class BarContainer extends Component {
                     </div>
                     &nbsp; &nbsp;
                 <div className="form-group">
-                        <label>Select Product &nbsp;</label>
+                        <label>Product &nbsp;</label>
                         <select className="form-control input-sm"
                             name="product_id"
                             onChange={this.handleChange}
@@ -146,6 +196,17 @@ export default class BarContainer extends Component {
                             <option value="">Choose Product</option>
                             {j}
                         </select>
+                    </div>
+                    &nbsp; &nbsp;
+                    <div className="form-group">
+                        <label>Barcode </label>&nbsp;<span style={{ color: 'red' }}>{this.state.error}</span>&nbsp;
+                        <input className="form-control input-sm"
+                            type="text"
+                            name="barcode"
+                            onChange={this.handleChange}
+                            value={this.state.barcode}
+                            placeholder="Type your barcode"
+                            required={true} />
                     </div>
                     &nbsp; &nbsp;
                 <div className="form-group">
@@ -164,7 +225,7 @@ export default class BarContainer extends Component {
                     </div>
                 </form>
 
-                <hr />
+                
 
                 {this.state.status ? <BarcodePrint onCloseClick={this.onCloseClick.bind(this)} no_barcode={this.state.print['no_barcode']} bar={this.state.print['bar']} /> : null }
 

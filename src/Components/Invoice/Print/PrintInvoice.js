@@ -93,20 +93,35 @@ export default class PrintInvoice extends Component {
             )
         }
 
+        let payments = [];
         let j = [];
         if (this.state.isLoading === false) {
-            let mop = this.state.payment.mop;
-            if (mop === '1') {
-                j = <span>By Cash</span>;
-            } else if (mop === '2') {
-                j = <span>By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.goodDate(this.state.payment.cheque_date)})</span>;
-            } else if (mop === '3') {
-                j = <span>By Debit/Credit Card</span>;
-            } else if (mop === '4') {
-                j = <span style={{ color: 'red' }}>Finance</span>
-            } else if (mop === '5') {
-                j = <span style={{ color: 'red' }}>Not Paid</span>
+            let p = this.state.payment;
+            if(Array.isArray(p) && p.length > 0){
+                payments = p.map((el,index) => {
+                    let m = "";
+                    if (el.mop === '1') {
+                        m = "By Cash";
+                    } else if (el.mop === '2') {
+                        m = "By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.goodDate(this.state.payment.cheque_date)})";
+                    } else if (el.mop === '3') {
+                        m = "By Debit/Credit Card";
+                    } else if (el.mop === '4') {
+                        m = "Vijaya Bank";
+                    } else if (el.mop === '5') {
+                        m = "Finance"
+                    } else if (el.mop === '6') {
+                        m = <span style={{ color: 'red' }}>Not Paid</span>
+                    }
+                    return(
+                        <li>
+                            Amount Paid : Rs. <b>{el.amount_paid}</b> | {m} on {el.date_of_payment} 
+                        </li>
+                    )
+                })
             }
+            let mop = this.state.payment.mop;
+            
         }
 
         let type_text = "";
@@ -232,7 +247,12 @@ export default class PrintInvoice extends Component {
                                     </div>
                                 </td>
                                 <td>
-                                    <b>Payment Details</b><br />Amount Paid: <b>{parseFloat(this.state.payment.amount_paid).toFixed(2)}</b>, Mode of Payment: <b>{j}</b>
+                                    <b>Payment Details</b>
+                                    <br />
+                                    <ul className="list-unstyled">
+                                            {payments}
+                                    </ul>
+                                    
                                     <hr/>
                                     <b>Remarks</b><br />
                                     {this.state.invoice_main.narration}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PaymentMulti from './PaymentMulti';
 
 export default class InvoiceDetReturn extends Component {
     constructor(props) {
@@ -37,7 +38,8 @@ export default class InvoiceDetReturn extends Component {
             notpaid: false,
             roff: '',
             c_charge: '',
-            narration: ''
+            narration: '',
+            payments: []
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -100,14 +102,7 @@ export default class InvoiceDetReturn extends Component {
             date_of_invoice: this.state.date_of_invoice,
             customer_id: this.state.customer_id,
             against_bill_no: this.state.against_bill_no,
-            payment: {
-                mop: this.state.mop,
-                amount_receivable: this.state.gtot,
-                cheque_no: this.state.cheque_no,
-                cheque_date: this.state.cheque_date,
-                amount_paid: this.state.amount_paid,
-                balance: this.state.balance,
-            },
+            payment: this.state.payments,
             gtot: this.state.gtot,
             type: type,
             place_of_supply: this.state.place_of_supply,
@@ -127,6 +122,12 @@ export default class InvoiceDetReturn extends Component {
 
         this.props.finalSubmit(data);
 
+    }
+
+    onPaymentChange = (data) => {
+        this.setState({
+            payments: data
+        })
     }
 
 
@@ -188,39 +189,13 @@ export default class InvoiceDetReturn extends Component {
                                 <td><br />
                                     <button className="btn btn-sm" type="button" onClick={this.props.showModal}>+ Customer</button>
                                 </td>
-                                <td>
-                                    <label>Mode of Payment</label>
-                                    <select
-                                        className="form-control input-sm"
-                                        name="mop"
-                                        value={this.state.mop}
-                                        onChange={this.handleChange} >
-                                        <option value="1">Cash</option>
-                                        <option value="2">Cheque</option>
-                                        <option value="3">VIJAYA BANK</option>
-                                        <option value="4">HDFC BANK</option>
-                                        <option value="5">PAYTM</option>
-                                    </select>
-                                    {j}
+                                <td colSpan="3">
+                                    <PaymentMulti
+                                        onPaymentChange={this.onPaymentChange.bind(this)}
+                                        value={this.state.payments}
+                                    />
                                 </td>
-                                <td>
-                                    <label>Amount Paid</label>
-                                    <input
-                                        className="form-control input-sm"
-                                        name="amount_paid"
-                                        value={this.state.amount_paid}
-                                        onChange={this.handleChange}
-                                        readOnly={this.state.notpaid} />
-
-                                </td>
-                                <td>
-                                    <label>Balance</label>
-                                    <input
-                                        className="form-control input-sm"
-                                        name="balance"
-                                        value={this.state.balance}
-                                        onChange={this.handleChange} />
-                                </td>
+                                
                             </tr>
                             <tr style={{ height: '60px' }}>
                                 <td>

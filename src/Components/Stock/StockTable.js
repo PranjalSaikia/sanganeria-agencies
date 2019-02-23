@@ -15,11 +15,16 @@ class StockTable extends Component {
     }
 
     buttonFormatter = (cell, row) => {
-        return (<a onClick={this.editData.bind(this, row.id)}><i className="fa fa-pencil"></i></a>)
+        if (row.po_no === '') {
+            return (<a onClick={this.editData.bind(this, row.id)}><i className="fa fa-pencil"></i></a>)
+        }
     }
 
     buttonFormatter1 = (cell, row) => {
-        return (<a onClick={this.deleteData.bind(this, row.id, row.barcode)}><i className="fa fa-trash"></i></a>)
+        if(row.po_no === ''){
+            return (<a onClick={this.deleteData.bind(this, row.id, row.barcode)}><i className="fa fa-trash"></i></a>)
+        }
+        
     }
 
     rowId = (cell,row, enumObject, rowIndex) => {
@@ -38,6 +43,7 @@ class StockTable extends Component {
                     <TableHeaderColumn dataField='barcode'>Product Code</TableHeaderColumn>
                     <TableHeaderColumn dataField='product_name'>Product Name</TableHeaderColumn>
                     <TableHeaderColumn dataField='brand_name'>Product Brand</TableHeaderColumn>
+                    <TableHeaderColumn dataField='model'>Model</TableHeaderColumn>
                     <TableHeaderColumn dataField='qty'>Qty Received</TableHeaderColumn>
                     <TableHeaderColumn dataField='cost'>Cost Price (per unit)</TableHeaderColumn>
                     <TableHeaderColumn dataField='tot'>Total Cost</TableHeaderColumn>

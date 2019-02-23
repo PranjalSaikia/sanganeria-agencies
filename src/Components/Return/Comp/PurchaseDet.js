@@ -23,8 +23,8 @@ export default class PurchaseDet extends Component {
 
         this.state = {
             f_products: [],
-            entry_date: today,
             against_bill_no: '',
+            entry_date: today,
             supplier_id: '',
             purchase_bill: '',
             purchase_bill_date: '',
@@ -34,18 +34,22 @@ export default class PurchaseDet extends Component {
             qty: '',
             cost: '',
             mrp: '',
-            total: '',
+            total: 0.00,
             temp: [],
             bill_total: 0.00,
             cgst: 0.00,
             sgst: 0.00,
             igst: 0.00,
             tax: 0.00,
-            discount: 0.00,
+            discount: '0.00',
+            discount_amount: '0.00',
             roff: 0.00,
             gtot: 0.00,
+            imei_temp: '',
             imei: '',
-            imei_temp: ''
+            sp_discount: '0.00',
+            inn: '',
+            edit: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -57,7 +61,6 @@ export default class PurchaseDet extends Component {
     _getInitial() {
 
         this.setState({
-            against_bill_no: '',
             supplier_id: '',
             purchase_bill: '',
             purchase_bill_date: '',
@@ -67,7 +70,7 @@ export default class PurchaseDet extends Component {
             qty: '',
             cost: '',
             mrp: '',
-            total: '',
+            total: '0.00',
             temp: [],
             bill_total: 0.00,
             cgst: 0.00,
@@ -77,8 +80,15 @@ export default class PurchaseDet extends Component {
             discount: 0.00,
             roff: 0.00,
             gtot: 0.00,
+            imei_temp: '',
             imei: '',
-            imei_temp: ''
+            discount: '0.00',
+            discount_amount: '0.00',
+            sub_total: '0.00',
+            sp_discount: '0.00',
+            inn: '',
+            edit: false,
+            against_bill_no: '',
         })
     }
 
@@ -127,18 +137,10 @@ export default class PurchaseDet extends Component {
         }
 
         if (e.target.name === 'cost') {
-            let cost = e.target.value;
-            let qty = this.state.qty;
-            if (qty === '') {
-                qty = 0;
-            }
-            let total = parseFloat(qty) * parseFloat(cost);
-
-            this.setState({
-                qty: qty,
-                total: total.toFixed(2)
-            })
+            this.calculate(this.state.qty, e.target.cost, this.state.discount, this.state.discount_amount, this.state.csgt, this.state.sgst, this.state.igst)
         }
+
+
 
 
         if (e.target.name === 'bill_total') {
@@ -147,153 +149,48 @@ export default class PurchaseDet extends Component {
         }
 
         if (e.target.name === 'cgst') {
-            let cgst = e.target.value;
-            let sgst = this.state.sgst;
-            let igst = this.state.igst;
-
-            let bill_total = this.state.bill_total;
-
-            let cgst_a = parseFloat(cgst) * parseFloat(bill_total) / 100;
-            let sgst_a = parseFloat(sgst) * parseFloat(bill_total) / 100;
-            let igst_a = parseFloat(igst) * parseFloat(bill_total) / 100;
-
-            let tax = cgst_a + sgst_a + igst_a;
-
-            let discount = this.state.discount;
-            let roff = this.state.roff;
-
-            if (discount === '') {
-                discount = 0;
-            }
-            if (roff === '') {
-                roff = 0;
-            }
-
-            let gtot = parseFloat(bill_total) + parseFloat(tax) - parseFloat(discount) + parseFloat(roff);
-
-            this.setState({
-                tax: tax.toFixed(2),
-                gtot: gtot.toFixed(2)
-            })
+            this.calculate(this.state.qty, this.state.cost, this.state.discount, this.state.discount_amount, e.target.value, this.state.sgst, this.state.igst)
 
         }
 
         if (e.target.name === 'sgst') {
-            let sgst = e.target.value;
-            let cgst = this.state.cgst;
-            let igst = this.state.igst;
-
-            let bill_total = this.state.bill_total;
-
-            let cgst_a = parseFloat(cgst) * parseFloat(bill_total) / 100;
-            let sgst_a = parseFloat(sgst) * parseFloat(bill_total) / 100;
-            let igst_a = parseFloat(igst) * parseFloat(bill_total) / 100;
-
-            let tax = cgst_a + sgst_a + igst_a;
-
-            let discount = this.state.discount;
-            let roff = this.state.roff;
-            if (discount === '') {
-                discount = 0;
-            }
-            if (roff === '') {
-                roff = 0;
-            }
-
-            let gtot = parseFloat(bill_total) + parseFloat(tax) - parseFloat(discount) + parseFloat(roff);
-
-            this.setState({
-                tax: tax.toFixed(2),
-                gtot: gtot.toFixed(2)
-            })
+            this.calculate(this.state.qty, this.state.cost, this.state.discount, this.state.discount_amount, this.state.cgst, e.target.value, this.state.igst)
 
         }
         if (e.target.name === 'igst') {
-            let igst = e.target.value;
-            let sgst = this.state.sgst;
-            let cgst = this.state.cgst;
-
-            let bill_total = this.state.bill_total;
-
-            let cgst_a = parseFloat(cgst) * parseFloat(bill_total) / 100;
-            let sgst_a = parseFloat(sgst) * parseFloat(bill_total) / 100;
-            let igst_a = parseFloat(igst) * parseFloat(bill_total) / 100;
-
-            let tax = cgst_a + sgst_a + igst_a;
-
-            let discount = this.state.discount;
-            let roff = this.state.roff;
-            if (discount === '') {
-                discount = 0;
-            }
-            if (roff === '') {
-                roff = 0;
-            }
-
-            let gtot = parseFloat(bill_total) + parseFloat(tax) - parseFloat(discount) + parseFloat(roff);
-
-            this.setState({
-                tax: tax.toFixed(2),
-                gtot: gtot.toFixed(2)
-            })
+            this.calculate(this.state.qty, this.state.cost, this.state.discount, this.state.discount_amount, this.state.cgst, this.state.sgst, e.target.value)
 
         }
         if (e.target.name === 'discount') {
-            let cgst = this.state.cgst;
-            let sgst = this.state.sgst;
-            let igst = this.state.igst;
+            this.calculate(this.state.qty, this.state.cost, e.target.value, this.state.discount_amount, this.state.cgst, this.state.sgst, this.state.igst)
 
-            let bill_total = this.state.bill_total;
+        }
 
-            let cgst_a = parseFloat(cgst) * parseFloat(bill_total) / 100;
-            let sgst_a = parseFloat(sgst) * parseFloat(bill_total) / 100;
-            let igst_a = parseFloat(igst) * parseFloat(bill_total) / 100;
+        if (e.target.name === 'discount_amount') {
+            this.calculate(this.state.qty, this.state.cost, this.state.discount, e.target.value, this.state.cgst, this.state.sgst, this.state.igst)
 
-            let tax = cgst_a + sgst_a + igst_a;
+        }
 
-            let discount = e.target.value;
+        if (e.target.name === 'sp_discount') {
+
+            let sp_discount = e.target.value;
             let roff = this.state.roff;
-            if (discount === '') {
-                discount = 0;
-            }
-            if (roff === '') {
-                roff = 0;
-            }
 
-            let gtot = parseFloat(bill_total) + parseFloat(tax) - parseFloat(discount) + parseFloat(roff);
+            let gtot = parseFloat(this.state.bill_total) - parseFloat(sp_discount) + parseFloat(roff);
 
             this.setState({
-                tax: tax.toFixed(2),
-                gtot: gtot.toFixed(2)
+                gtot: gtot.toFixed(2),
+
             })
 
         }
         if (e.target.name === 'roff') {
-            let cgst = this.state.cgst;
-            let sgst = this.state.sgst;
-            let igst = this.state.igst;
-
-            let bill_total = this.state.bill_total;
-
-            let cgst_a = parseFloat(cgst) * parseFloat(bill_total) / 100;
-            let sgst_a = parseFloat(sgst) * parseFloat(bill_total) / 100;
-            let igst_a = parseFloat(igst) * parseFloat(bill_total) / 100;
-
-            let tax = cgst_a + sgst_a + igst_a;
-
-            let discount = this.state.discount;
             let roff = e.target.value;
-            if (discount === '') {
-                discount = 0;
-            }
-            if (roff === '') {
-                roff = 0;
-            }
+            let sp_discount = this.state.sp_discount;
 
-            let gtot = parseFloat(bill_total) + parseFloat(tax) - parseFloat(discount) + parseFloat(roff);
+            let gtot = parseFloat(this.state.bill_total) - parseFloat(sp_discount) + parseFloat(roff);
 
             this.setState({
-                tax: tax.toFixed(2),
                 gtot: gtot.toFixed(2),
 
             })
@@ -301,33 +198,37 @@ export default class PurchaseDet extends Component {
         }
     }
 
-    handleChangeTotal(total) {
-        let cgst = this.state.cgst;
-        let sgst = this.state.sgst;
-        let igst = this.state.igst;
 
-        let bill_total = parseFloat(total);
 
-        let cgst_a = parseFloat(cgst) * parseFloat(bill_total) / 100;
-        let sgst_a = parseFloat(sgst) * parseFloat(bill_total) / 100;
-        let igst_a = parseFloat(igst) * parseFloat(bill_total) / 100;
+    calculate = (qty, cost, discount, discount_amount, cgst, sgst, igst) => {
+        let amount = parseFloat(qty) * parseFloat(cost);
+        let d_amount = amount * parseFloat(discount) / 100;
+        //let d = parseFloat(discount_amount) * 100 / parseFloat(amount);
 
-        let tax = cgst_a + sgst_a + igst_a;
+        let sub_total = amount - d_amount;
 
-        let discount = this.state.discount;
-        let roff = this.state.roff;
+        let tax_p = parseFloat(cgst) + parseFloat(sgst) + parseFloat(igst);
 
-        if (discount === '') {
-            discount = 0;
-        }
-        if (roff === '') {
-            roff = 0;
-        }
+        let tax = sub_total * tax_p / 100;
 
-        let gtot = parseFloat(bill_total) + parseFloat(tax) - parseFloat(discount) + parseFloat(roff);
+        let total = sub_total + tax;
 
         this.setState({
+            discount_amount: d_amount.toFixed(2),
+            sub_total: sub_total.toFixed(2),
             tax: tax.toFixed(2),
+            total: total.toFixed(2)
+        })
+
+    }
+
+    handleChangeTotal(total) {
+
+        let roff = this.state.roff;
+
+        let gtot = parseFloat(total) + parseFloat(roff);
+
+        this.setState({
             gtot: gtot.toFixed(2)
         })
     }
@@ -357,10 +258,25 @@ export default class PurchaseDet extends Component {
             cost: this.state.cost,
             mrp: this.state.mrp,
             total: this.state.total,
-            imei: this.state.imei
+            imei: this.state.imei,
+            discount: this.state.discount,
+            discount_amount: this.state.discount_amount,
+            cgst: this.state.cgst,
+            sgst: this.state.sgst,
+            igst: this.state.igst,
+            tax: this.state.tax,
+            sub_total: this.state.sub_total
         }
 
-        temp.push(data);
+        if (this.state.edit) {
+            //if edit
+            temp.splice(this.state.inn, 1);
+            temp.push(data);
+
+        } else {
+            temp.push(data);
+        }
+
 
         //total calculation
 
@@ -377,8 +293,18 @@ export default class PurchaseDet extends Component {
             qty: '',
             cost: '',
             mrp: '',
-            total: '',
-            imei: ''
+            total: '0.00',
+            imei: '',
+            discount: '0.00',
+            discount_amount: '0.00',
+            sub_total: '0.00',
+            cgst: '0.00',
+            sgst: '0.00',
+            igst: '0.00',
+            tax: '0.00',
+            inn: '',
+            edit: false
+
         })
 
         this.handleChangeTotal(total);
@@ -411,20 +337,14 @@ export default class PurchaseDet extends Component {
             purchase_bill: this.state.purchase_bill,
             purchase_bill_date: this.state.purchase_bill_date,
             bill_total: this.state.bill_total,
-            cgst: this.state.cgst,
-            sgst: this.state.sgst,
-            igst: this.state.igst,
-            tax: this.state.tax,
-            discount: this.state.discount,
+            sp_discount: this.state.sp_discount,
             roff: this.state.roff,
             gtot: this.state.gtot,
             table_data: this.state.temp
         }
 
-        //console.log(data);
         PostData('/api/purchase_return.php', data)
             .then((resp) => {
-                //console.log(resp);
                 if (resp.status === '200') {
                     notify.show(resp.data, 'success', 3000);
                     this._getInitial();
@@ -434,6 +354,40 @@ export default class PurchaseDet extends Component {
             })
 
 
+    }
+
+
+    onEditClick = (data, index) => {
+        this.setState({
+            ...data,
+            inn: index,
+            f_products: this.props.product,
+            product_id: data.barcode,
+            edit: true
+        })
+    }
+
+    onCancelClick = () => {
+        this.setState({
+            brand_id: '',
+            against_bill_no: '',
+            product_id: '',
+            barcode: '',
+            qty: '',
+            cost: '',
+            mrp: '',
+            total: '0.00',
+            imei: '',
+            discount: '0.00',
+            discount_amount: '0.00',
+            sub_total: '0.00',
+            cgst: '0.00',
+            sgst: '0.00',
+            igst: '0.00',
+            tax: '0.00',
+            inn: '',
+            edit: false
+        })
     }
 
 
@@ -515,96 +469,249 @@ export default class PurchaseDet extends Component {
                 </table>
 
                 <hr />
-                <form onSubmit={this.handleSubmit}>
-                    <table width="100%">
-                        <tbody>
-                            <tr>
-                                <td width="10%">
-                                    <label>Brand</label>
-                                    <select className="form-control input-sm"
-                                        name="brand_id"
-                                        value={this.state.brand_id}
-                                        onChange={this.handleChange}
-                                        required={true} >
-                                        <option value="">Choose</option>
-                                        {i}
-                                    </select>
+                <table width="100%" >
+                    <tbody>
+                        <tr>
+                            <td width="30%">
+                                <form onSubmit={this.handleSubmit}>
+
+                                    <table width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td width="20%">
+                                                    <label>Brand</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+                                                    <select className="form-control input-sm"
+                                                        name="brand_id"
+                                                        value={this.state.brand_id}
+                                                        onChange={this.handleChange}
+                                                        required={true} >
+                                                        <option value="">Choose</option>
+                                                        {i}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="20%">
+                                                    <label>Product</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <select className="form-control input-sm"
+                                                        name="barcode"
+                                                        value={this.state.barcode}
+                                                        onChange={this.handleChange}
+                                                        required={true} >
+                                                        <option value="">Choose</option>
+                                                        {j}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="20%">
+                                                    <label>Qty</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        name="qty"
+                                                        value={this.state.qty}
+                                                        onChange={this.handleChange} />
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td width="20%">
+                                                    <label>Cost</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        name="cost"
+                                                        value={this.state.cost}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td width="20%">
+                                                    <label>MRP</label>
+                                                </td>
+                                                <td width="100%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        name="mrp"
+                                                        value={this.state.mrp}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td width="20%">
+                                                    <label>Discount</label>
+                                                </td>
+                                                <td width="100%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        name="discount"
+                                                        value={this.state.discount}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td width="20%">
+                                                    <label>D Amount</label>
+                                                </td>
+                                                <td width="100%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        name="discount_amount"
+                                                        value={this.state.discount_amount}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td width="20%">
+                                                    <label>Sub Total</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        name="sub_total"
+                                                        value={this.state.sub_total}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+
+                                            </tr>
+
+                                            <tr >
+                                                <td width="20%">
+                                                    GST
+                                                    </td>
+                                                <td >
+                                                    <label>CGST</label>
+                                                    <input className="form-control input-sm"
+                                                        name="cgst"
+                                                        value={this.state.cgst}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+                                                <td >
+                                                    <label>SGST</label>
+                                                    <input className="form-control input-sm"
+                                                        name="sgst"
+                                                        value={this.state.sgst}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+                                                <td >
+                                                    <label>IGST</label>
+                                                    <input className="form-control input-sm"
+                                                        name="igst"
+                                                        value={this.state.igst}
+                                                        onChange={this.handleChange}
+                                                        required={true} />
+                                                </td>
+
+
+                                            </tr>
+                                            <tr>
+                                                <td width="20%">
+                                                    <label>Tax</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        type="text"
+                                                        name="tax"
+                                                        onChange={this.handleChange}
+                                                        value={this.state.tax}
+
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="20%">
+                                                    <label>Total</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        type="text"
+                                                        name="total"
+                                                        onChange={this.handleChange}
+                                                        value={this.state.total}
+
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="20%">
+                                                    <label>IMEI</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+
+                                                    <input className="form-control input-sm"
+                                                        type="text"
+                                                        name="imei_temp"
+                                                        onChange={this.handleChange}
+                                                        onBlur={this.handleIMEI}
+                                                        value={this.state.imei_temp}
+                                                        placeholder="Scan IMEI Here"
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+
+                                                <td width="20%">
+                                                    <label>IMEI Stock</label>
+                                                </td>
+                                                <td width="80%" colSpan="3">
+                                                    <input className="form-control input-sm"
+                                                        type="text"
+                                                        name="imei"
+                                                        onChange={this.handleChange}
+                                                        value={this.state.imei}
+                                                    />
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <td colSpan="4" align="right">
+                                                    <br />
+
+                                                    {this.state.edit ? <div>
+                                                        <button type="submit" className="btn btn-primary btn-sm">Edit</button> &nbsp;
+                                                        <button type="button" onClick={this.onCancelClick} className="btn btn-danger btn-sm">Cancel</button>
+                                                    </div> : <button type="submit" className="btn btn-primary btn-sm">Add</button>}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </td>
+
+                            <td width="5%">
+                                &nbsp;
                                 </td>
-                                <td width="15%">
-                                    <label>Product</label>
-                                    <select className="form-control input-sm"
-                                        name="barcode"
-                                        value={this.state.barcode}
-                                        onChange={this.handleChange}
-                                        required={true} >
-                                        <option value="">Choose</option>
-                                        {j}
-                                    </select>
-                                </td>
-                                <td>
-                                    <label>Qty</label>
-                                    <input className="form-control input-sm"
-                                        name="qty"
-                                        value={this.state.qty}
-                                        onChange={this.handleChange} />
-                                </td>
-                                <td>
-                                    <label>Cost Price</label>
-                                    <input className="form-control input-sm"
-                                        name="cost"
-                                        value={this.state.cost}
-                                        onChange={this.handleChange}
-                                        required={true} />
-                                </td>
-                                <td>
-                                    <label>MRP</label>
-                                    <input className="form-control input-sm"
-                                        name="mrp"
-                                        value={this.state.mrp}
-                                        onChange={this.handleChange}
-                                        required={true} />
-                                </td>
-                                <td>
-                                    <label>Total</label>
-                                    <input className="form-control input-sm"
-                                        name="total"
-                                        value={this.state.total}
-                                        onChange={this.handleChange}
-                                        required={true} />
-                                </td>
-                                
-                            </tr>
-                            <tr style={{ marginTop: '50px' }}>
-                                <td>
-                                    <label>Scan IMEI Here</label>
-                                    <input className="form-control input-sm"
-                                        type="text"
-                                        name="imei_temp"
-                                        onChange={this.handleChange}
-                                        onBlur={this.handleIMEI}
-                                        value={this.state.imei_temp}
-                                        placeholder="Scan IMEI Here"
-                                    />
-                                </td>
-                                <td colSpan="4">
-                                    <label>IMEI Stock</label>
-                                    <input className="form-control input-sm"
-                                        type="text"
-                                        name="imei"
-                                        onChange={this.handleChange}
-                                        value={this.state.imei}
-                                    />
-                                </td>
-                                <td><br />
-                                    <button type="submit" className="btn btn-primary btn-sm">Add</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
+
+                            <td width="55%" style={{ margin: '20px', verticalAlign: 'top' }}>
+                                <TempTable
+                                    data={this.state.temp}
+                                    onDelete={this.onDelete.bind(this)}
+                                    onEditClick={this.onEditClick.bind(this)}
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
 
                 <hr />
-                <TempTable data={this.state.temp} onDelete={this.onDelete.bind(this)} />
+
 
                 <hr />
                 <table width="100%">
@@ -619,40 +726,40 @@ export default class PurchaseDet extends Component {
                                     onChange={this.handleChange}
                                 />
                             </td>
-                            <td>
-                                <label>CGST(%)</label>
-                                <input className="form-control input-sm"
-                                    name="cgst"
-                                    value={this.state.cgst}
-                                    onChange={this.handleChange} />
-                            </td>
-                            <td>
-                                <label>SGST(%)</label>
-                                <input className="form-control input-sm"
-                                    name="sgst"
-                                    value={this.state.sgst}
-                                    onChange={this.handleChange} />
-                            </td>
-                            <td>
-                                <label>IGST(%)</label>
-                                <input className="form-control input-sm"
-                                    name="igst"
-                                    value={this.state.igst}
-                                    onChange={this.handleChange} />
-                            </td>
-                            <td>
-                                <label>Tax</label>
-                                <input className="form-control input-sm"
-                                    name="tax"
-                                    value={this.state.tax}
-                                    onChange={this.handleChange}
-                                    readOnly={true} />
-                            </td>
+                            {/* <td>
+                                    <label>CGST(%)</label>
+                                    <input className="form-control input-sm"
+                                        name="cgst"
+                                        value={this.state.cgst}
+                                        onChange={this.handleChange} />
+                                </td>
+                                <td>
+                                    <label>SGST(%)</label>
+                                    <input className="form-control input-sm"
+                                        name="sgst"
+                                        value={this.state.sgst}
+                                        onChange={this.handleChange} />
+                                </td>
+                                <td>
+                                    <label>IGST(%)</label>
+                                    <input className="form-control input-sm"
+                                        name="igst"
+                                        value={this.state.igst}
+                                        onChange={this.handleChange} />
+                                </td>
+                                <td>
+                                    <label>Tax</label>
+                                    <input className="form-control input-sm"
+                                        name="tax"
+                                        value={this.state.tax}
+                                        onChange={this.handleChange}
+                                        readOnly={true} />
+                                </td> */}
                             <td>
                                 <label>Special Discount</label>
                                 <input className="form-control input-sm"
-                                    name="discount"
-                                    value={this.state.discount}
+                                    name="sp_discount"
+                                    value={this.state.sp_discount}
                                     onChange={this.handleChange} />
                             </td>
                             <td>

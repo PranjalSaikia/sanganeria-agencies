@@ -9,20 +9,34 @@ export default class TablePurchase extends Component {
         let i = [];
         let data = this.props.data;
         if (data.length > 0) {
-            i = data.map((el, index) =>
-                <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{el.entry_date}</td>
-                    <td>{el.purchase_bill}</td>
-                    <td>{el.purchase_bill_date}</td>
-                    <td>{el.supplier_name}</td>
-                    <td align="right">{el.bill_total}</td>
-                    <td align="right">{el.tax}</td>
-                    <td align="right">{el.gtot}</td>
-                    <td align="center"><Link to={`/stock/print/${el.id}`} ><i className="fa fa-file"></i></Link></td>
-                    <td align="center"><Link to={`/stock/edit/${el.id}`} ><i className="fa fa-pencil"></i></Link></td>
-                    <td align="center"><a onClick={this.onDelete.bind(this,el.id)} ><i className="fa fa-trash"></i></a></td>
-                </tr>)
+
+            
+            i = data.map((el, index) =>{
+                let tax = 0;
+                let table_data = el.table_data;
+                if(Array.isArray(table_data) && table_data.length > 0){
+                    table_data.map((el,index) => {
+                        tax = tax + parseFloat(el.tax)
+                    })
+                }
+
+                return (
+                    <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{el.entry_date}</td>
+                        <td>{el.purchase_bill}</td>
+                        <td>{el.purchase_bill_date}</td>
+                        <td>{el.supplier_name}</td>
+                        <td align="right">{el.bill_total}</td>
+                        <td align="right">{tax !== NaN ? tax.toFixed(2) : null}</td>
+                        <td align="right">{el.gtot}</td>
+                        <td align="center"><Link to={`/stock/print/${el.id}`} ><i className="fa fa-file"></i></Link></td>
+                        <td align="center"><Link to={`/stock/edit/${el.id}`} ><i className="fa fa-pencil"></i></Link></td>
+                        <td align="center"><a onClick={this.onDelete.bind(this, el.id)} ><i className="fa fa-trash"></i></a></td>
+                    </tr>
+                )
+            }
+                )
         } else {
             i = <tr key="0">
                 <td colSpan="11" align="center">

@@ -8,17 +8,28 @@ class CustomerWiseBill extends Component {
             i = results.map((el, index) => {
                 let payment = JSON.parse(el.payment);
                 let str = "";
-                if (payment.mop === '1') {
-                    str = "By Cash";
-                } else if (payment.mop === '2') {
-                    str = "By Cheque, Cheque No. " + payment.cheque_no + " dated: " + payment.cheque_date;
-                } else if (payment.mop === '3') {
-                    str = "By Debit/Credit Card";
-                } else if (payment.mop === '4') {
-                    str = "Finance";
-                }
-                else if (payment.mop === '5') {
-                    str = "Not paid";
+                if (Array.isArray(payment) && payment.length > 0) {
+                    str = payment.map((el, index) => {
+                        let m = "";
+                        if (el.mop === '1') {
+                            m = "By Cash";
+                        } else if (el.mop === '2') {
+                            m = "By Cheque (Cheque No. {this.state.payment.cheque_no}, Dated: {this.goodDate(this.state.payment.cheque_date)})";
+                        } else if (el.mop === '3') {
+                            m = "By Debit/Credit Card";
+                        } else if (el.mop === '4') {
+                            m = "Vijaya Bank";
+                        } else if (el.mop === '5') {
+                            m = "Finance"
+                        } else if (el.mop === '6') {
+                            m = <span style={{ color: 'red' }}>Not Paid</span>
+                        }
+                        return (
+                            <li>
+                                Amount Paid : Rs. <b>{el.amount_paid}</b> | {m} on {el.date_of_payment}
+                            </li>
+                        )
+                    })
                 }
                 let j = "";
                 if (this.props.type === '0') {
@@ -50,7 +61,11 @@ class CustomerWiseBill extends Component {
                         <td align="right">{parseFloat(el.tax).toFixed(2)}</td>
                         <td align="right">{parseFloat(el.roff).toFixed(2)}</td>
                         <td align="right">{parseFloat(el.gtot).toFixed(2)}</td>
-                        <td>{str}</td>
+                        <td>
+                            <ul className="list-unstyled">
+                                {str}
+                            </ul>
+                        </td>
                         <td>{el.narration}</td>
                     </tr>
                 )
